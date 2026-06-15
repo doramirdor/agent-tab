@@ -6,6 +6,7 @@
 
 import * as fs from "fs";
 import { snapshot } from "../core/git";
+import { debug } from "../core/log";
 import { runsDir, sessionJsonlPath } from "../core/paths";
 import type { AgentEvent } from "../core/types";
 import { countLines } from "../core/util";
@@ -137,6 +138,7 @@ export async function runHook(argv: string[]): Promise<number> {
     try {
       payload = JSON.parse(raw) as Record<string, unknown>;
     } catch {
+      debug("hook: ignored non-JSON stdin");
       return 0; // never block on bad input
     }
 
@@ -197,12 +199,19 @@ export async function runHook(argv: string[]): Promise<number> {
     // Append the line.
     try {
       fs.mkdirSync(runsDir(cwd), { recursive: true });
-      fs.appendFileSync(sessionJsonlPath(sessionId, cwd), JSON.stringify(ev) + "\n");
-    } catch {
+      const file = sessionJsonlPath(sessionId, cwd);
+      fs.appendFileSync(file, JSON.stringify(ev) + "\n");
+      debug(
+        `hook: ${ev.event} (${hookEventName || "?"}) tool=${ev.tool} ${ev.tool_name || ""} -> ${file}`,
+        cwd,
+      );
+    } catch (err) {
+      debug(`hook: write failed: ${(err && (err as Error).message) || err}`, cwd);
       /* ignore write errors — must not block */
     }
     return 0;
-  } catch {
+  } catch (err) {
+    debug(`hook: fatal: ${(err && (err as Error).stack) || err}`);
     return 0;
   }
 }

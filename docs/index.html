@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Tab — a spending tab for your coding agent</title>
+<meta name="description" content="Local-first cost + bloat receipts for Claude Code and Codex. npx agent-tab install.">
+<meta property="og:title" content="Agent Tab">
+<meta property="og:description" content="A spending tab for your coding agent. Local-first cost + bloat receipts for Claude Code and Codex.">
+<style>
+  :root{
+    --bg:#0b0c0e; --surface:#16181d; --surface2:#101216; --border:#2a2d34;
+    --text:#e8eaed; --muted:#9aa0a6; --dim:#5f6671;
+    --accent:#3ecf8e; --amber:#f5b042; --red:#ff5c5c;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+  header{padding:72px 0 28px;text-align:center}
+  .logo{font-size:15px;letter-spacing:.5px;color:var(--muted);font-weight:600}
+  h1{font-size:clamp(34px,6vw,56px);line-height:1.05;margin:18px 0 10px;font-weight:800}
+  .tag{font-size:clamp(16px,2.4vw,20px);color:var(--muted);max-width:620px;margin:0 auto}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:30px 0 8px}
+  .install{display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-family:var(--mono);font-size:15px}
+  .install .p{color:var(--dim)}
+  .btn{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:12px;padding:12px 18px;color:var(--text);font-weight:500;background:var(--surface)}
+  .btn.primary{background:var(--accent);color:#06231a;border-color:transparent}
+  .note{color:var(--dim);font-size:13px;margin-top:6px}
+  section{padding:42px 0}
+  .hero-card{display:flex;justify-content:center;margin:36px 0 8px}
+  .hero-card svg{max-width:100%;height:auto;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+  h2{font-size:24px;font-weight:700;margin:0 0 18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
+  .card h3{margin:0 0 6px;font-size:16px;font-weight:600}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  pre{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:18px 20px;overflow:auto;font-family:var(--mono);font-size:13.5px;line-height:1.7;color:#cdd2d8}
+  .flow{white-space:pre;color:var(--muted)}
+  .accent{color:var(--accent)} .amberc{color:var(--amber)} .dimc{color:var(--dim)} .redc{color:var(--red)}
+  footer{padding:48px 0 64px;text-align:center;color:var(--dim);font-size:13px;border-top:1px solid var(--border);margin-top:24px}
+  .links{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo">AGENT TAB</div>
+    <h1>A spending tab for your<br>coding agent.</h1>
+    <p class="tag">Local-first cost + bloat receipts for Claude Code and Codex. No account, no upload, no API key — it all runs on your machine.</p>
+    <div class="cta">
+      <span class="install"><span class="p">$</span> npx agent-tab install</span>
+      <a class="btn primary" href="https://github.com/doramirdor/agent-tab">View on GitHub</a>
+    </div>
+    <div class="note">Then use your agent as usual and run <code>npx agent-tab report</code>.</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero-card">
+    <svg xmlns="http://www.w3.org/2000/svg" width="720" height="460" viewBox="0 0 720 460" font-family="var(--sans)" role="img" aria-label="Example Agent Tab receipt: $1.42 estimated, bloat score 87 of 100, biggest waste re-read package-lock.json 7 times.">
+      <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16181d"/><stop offset="1" stop-color="#0d0f12"/></linearGradient></defs>
+      <rect width="720" height="460" rx="20" fill="url(#bg)"/>
+      <rect x="0.5" y="0.5" width="719" height="459" rx="20" fill="none" stroke="#2a2d34"/>
+      <text x="40" y="58" font-size="22" font-weight="800" fill="#e8eaed">Agent Tab</text>
+      <text x="40" y="80" font-size="14" fill="#9aa0a6">Claude Code run receipt</text>
+      <text x="40" y="140" font-family="ui-monospace,monospace" font-size="52" font-weight="800" fill="#ff5c5c">$1.42</text>
+      <text x="42" y="164" font-size="14" fill="#9aa0a6">estimated run cost</text>
+      <circle cx="600" cy="96" r="46" fill="none" stroke="#2a2d34" stroke-width="10"/>
+      <circle cx="600" cy="96" r="46" fill="none" stroke="#ff5c5c" stroke-width="10" stroke-linecap="round" stroke-dasharray="251.5 289" transform="rotate(-90 600 96)"/>
+      <text x="600" y="94" text-anchor="middle" font-family="ui-monospace,monospace" font-size="30" font-weight="800" fill="#e8eaed">87</text>
+      <text x="600" y="114" text-anchor="middle" font-size="12" fill="#9aa0a6">bloat</text>
+      <line x1="40" y1="232" x2="680" y2="232" stroke="#2a2d34"/>
+      <g font-family="ui-monospace,monospace" font-size="30" font-weight="700" fill="#e8eaed">
+        <text x="40" y="196">213k</text><text x="190" y="196">9.8k</text><text x="340" y="196">18</text><text x="440" y="196">+612</text><text x="600" y="196">27</text>
+      </g>
+      <g font-size="14" fill="#9aa0a6">
+        <text x="40" y="220">input tokens</text><text x="190" y="220">output tokens</text><text x="340" y="220">files</text><text x="440" y="220">lines added</text><text x="600" y="220">commands</text>
+      </g>
+      <text x="40" y="296" font-size="13" font-weight="700" fill="#9aa0a6" letter-spacing="1">BIGGEST WASTE</text>
+      <text x="40" y="324" font-size="19" font-weight="700" fill="#f5b042">Re-read package-lock.json 7 times</text>
+      <rect x="40" y="346" width="640" height="74" rx="12" fill="#11261c" stroke="#1f4733"/>
+      <text x="58" y="374" font-size="13" font-weight="700" fill="#3ecf8e" letter-spacing="1">FIX</text>
+      <text x="58" y="398" font-size="15" fill="#cfe9dd">Add lockfiles to your agent ignore rules.</text>
+      <text x="680" y="442" text-anchor="end" font-size="12" fill="#5f6671">npx agent-tab</text>
+    </svg>
+  </div>
+
+  <section>
+    <h2>What you get</h2>
+    <div class="grid">
+      <div class="card"><h3>Accurate cost</h3><p>Real token usage from the agent's own transcript — deduped per request, with the cache read/write split. Labeled estimated, never faked.</p></div>
+      <div class="card"><h3>Bloat score</h3><p>A transparent 0–100 score for how wasteful a run was, capped per dimension so nothing dominates.</p></div>
+      <div class="card"><h3>Waste detectors</h3><p>Re-read files, lockfile reads, failing-test loops, dependency creep, huge reads, edit churn, and more — each with a concrete fix.</p></div>
+      <div class="card"><h3>Rules that stick</h3><p><code>agent-tab fix</code> writes the recurring wastes into CLAUDE.md / AGENTS.md so the next run is leaner.</p></div>
+      <div class="card"><h3>Shareable receipts</h3><p>Export a card as SVG, PNG, or HTML. The painful, funny, useful thing you post.</p></div>
+      <div class="card"><h3>Weekly bill</h3><p><code>agent-tab summary</code> totals your recent runs locally. Plus per-run history.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <pre class="flow">Claude Code / Codex
+   <span class="dimc">│  lifecycle hooks (SessionStart, PreToolUse, PostToolUse, Stop, …)</span>
+   ▼
+agent-tab hook  <span class="dimc">──►  .agent-tab/runs/&lt;session&gt;.jsonl</span>
+   ▼
+analyzer  <span class="dimc">──►  transcript/rollout tokens + git diff + detectors</span>
+   ├─►  <span class="accent">receipt</span>      agent-tab report
+   ├─►  <span class="accent">weekly bill</span>  agent-tab summary
+   ├─►  <span class="accent">share card</span>   agent-tab share --png
+   └─►  <span class="accent">agent rules</span>  agent-tab fix</pre>
+  </section>
+
+  <section>
+    <h2>Codex too</h2>
+    <pre>$ npx agent-tab install --codex</pre>
+    <p style="color:var(--muted);font-size:14px;margin-top:12px">Same flow. Tokens come from Codex's on-disk rollout. Note: Codex skips a new command hook until you trust it — run <code>/hooks</code> inside Codex once after installing.</p>
+  </section>
+</div>
+
+<footer>
+  <div class="links">
+    <a href="https://github.com/doramirdor/agent-tab">GitHub</a>
+    <a href="https://github.com/doramirdor/agent-tab#readme">Docs</a>
+    <a href="https://github.com/doramirdor/agent-tab/blob/main/docs/ARCHITECTURE.md">Architecture</a>
+    <a href="https://github.com/doramirdor/agent-tab/blob/main/CHANGELOG.md">Changelog</a>
+  </div>
+  MIT licensed · local-first · zero required runtime dependencies
+</footer>
+</body>
+</html>

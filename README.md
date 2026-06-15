@@ -1,6 +1,12 @@
 # Agent Tab
 
-**A spending tab for your coding agent.** Local-first cost + bloat receipts for Claude Code.
+[![CI](https://github.com/doramirdor/agent-tab/actions/workflows/ci.yml/badge.svg)](https://github.com/doramirdor/agent-tab/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%E2%89%A522.5-43853d.svg)](https://nodejs.org)
+
+**A spending tab for your coding agent.** Local-first cost + bloat receipts for Claude Code and Codex.
+
+🌐 [doramirdor.github.io/agent-tab](https://doramirdor.github.io/agent-tab/) · 📐 [Architecture](docs/ARCHITECTURE.md) · 🤝 [Contributing](CONTRIBUTING.md) · 🔒 [Security](SECURITY.md)
 
 ```text
   Agent Tab  ·  Claude Code
@@ -136,6 +142,16 @@ npm install      # builds via the prepare script
 npm run build
 npm test         # end-to-end smoke tests (Claude Code + Codex) against the compiled binary
 ```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the project layout and how to add a detector,
+and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the data flow.
+
+## Troubleshooting
+
+Hooks are silent by design (agents can inject hook stdout into the model). If a run isn't
+showing up, set `AGENT_TAB_DEBUG=1` and check `.agent-tab/agent-tab.log`. Confirm the
+hooks are registered with `agent-tab install --print`. On Codex, remember to trust the
+hook via `/hooks` after installing.
 
 ## Status
 

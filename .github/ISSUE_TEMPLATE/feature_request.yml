@@ -1,0 +1,22 @@
+name: Feature request
+description: Suggest an idea (a new detector, integration, output, etc.)
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's the problem or wasteful pattern?
+      description: What does your agent do that costs money or wastes effort?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like Agent Tab to do?
+    validations:
+      required: true
+  - type: input
+    id: category
+    attributes:
+      label: Area
+      placeholder: detector / integration (Cursor, Aider, …) / receipt / fix rules / other
