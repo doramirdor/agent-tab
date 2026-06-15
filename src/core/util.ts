@@ -47,6 +47,24 @@ export function oneLine(s: string, maxLen = 80): string {
   return flat.slice(0, Math.max(0, maxLen - 1)) + "…";
 }
 
+/** Word-wrap text to a width, returning lines. Collapses whitespace. */
+export function wrapText(s: string, width = 74): string[] {
+  const words = (s || "").replace(/\s+/g, " ").trim().split(" ").filter(Boolean);
+  if (words.length === 0) return [""];
+  const lines: string[] = [];
+  let cur = "";
+  for (const w of words) {
+    if (!cur) cur = w;
+    else if ((cur + " " + w).length <= width) cur += " " + w;
+    else {
+      lines.push(cur);
+      cur = w;
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
 /** Human label for a tool id. */
 export function toolLabel(tool: string | undefined): string {
   if (tool === "codex") return "Codex";

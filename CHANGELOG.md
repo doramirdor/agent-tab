@@ -11,6 +11,8 @@ All notable changes to this project are documented here. The format is based on
   Hooks record each project on lifecycle events so commands can find your data.
 
 ### Changed
+- The receipt no longer truncates the biggest-waste explanation/fix with `…` — it
+wraps the full text to your terminal width.
 - `report` no longer prints a misleading all-zeros receipt when run outside a project.
   If the current project has no usable session, it explains that `report` is
   per-project and lists your recent agent-tab projects to `cd` into.

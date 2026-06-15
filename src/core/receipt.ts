@@ -1,7 +1,13 @@
 // Render a RunReport as a terminal receipt.
 
 import type { Finding, RunReport } from "./types";
-import { c, fmtInt, fmtTokens, fmtUsd, oneLine, toolLabel } from "./util";
+import { c, fmtInt, fmtTokens, fmtUsd, toolLabel, wrapText } from "./util";
+
+/** Wrap width that respects the terminal, clamped to a readable range. */
+function wrapWidth(): number {
+  const cols = (process.stdout && process.stdout.columns) || 80;
+  return Math.max(48, Math.min(cols - 4, 100));
+}
 
 function severityTag(f: Finding): string {
   if (f.severity === "high") return c.red("●");
@@ -56,12 +62,13 @@ export function renderReceipt(r: RunReport): string {
   const headline = actionable[0];
 
   if (headline) {
+    const w = wrapWidth();
     L.push(`  ${c.bold("Biggest waste:")}`);
-    L.push(`  ${c.yellow(headline.title)}`);
-    L.push(`  ${c.dim(oneLine(headline.explanation, 76))}`);
+    for (const ln of wrapText(headline.title, w)) L.push(`  ${c.yellow(ln)}`);
+    for (const ln of wrapText(headline.explanation, w)) L.push(`  ${c.dim(ln)}`);
     L.push("");
     L.push(`  ${c.bold("Fix:")}`);
-    L.push(`  ${c.green(oneLine(headline.suggestedFix, 76))}`);
+    for (const ln of wrapText(headline.suggestedFix, w)) L.push(`  ${c.green(ln)}`);
     L.push("");
     const rest = [...actionable.slice(1), ...notes];
     if (rest.length) {
