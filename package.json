@@ -1,0 +1,40 @@
+{
+  "name": "agent-tab",
+  "version": "0.1.0",
+  "description": "A spending tab for your coding agent. Local-first cost + bloat receipts for Claude Code.",
+  "license": "MIT",
+  "type": "commonjs",
+  "bin": {
+    "agent-tab": "bin/agent-tab.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "test": "node scripts/e2e.js && node scripts/e2e-codex.js",
+    "agent-tab": "node bin/agent-tab.js"
+  },
+  "keywords": [
+    "claude-code",
+    "cli",
+    "ai-agents",
+    "cost",
+    "observability",
+    "hooks"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  },
+  "optionalDependencies": {
+    "@resvg/resvg-js": "^2.6.2"
+  }
+}
