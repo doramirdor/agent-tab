@@ -221,16 +221,24 @@ const editChurn: Detector = (ctx) => {
   };
 };
 
-// 11. Too much output generated.
+// 11. Output disproportionate to the work done.
+//
+// Raw output volume scales with session length, so a big number alone isn't waste —
+// a long, productive run earns its output. We only flag output that's large AND
+// disproportionate to durable change (few files / a tiny diff), i.e. mostly talk or
+// whole-file rewrites rather than work. Always low severity (informational).
 const outputHeavy: Detector = (ctx) => {
   const out = ctx.tokens.outputTokens;
-  if (out < 30_000) return null;
+  if (out < 50_000) return null;
+  const changed = ctx.files.linesAdded + ctx.files.linesRemoved;
+  const productive = ctx.files.filesTouched >= 3 || changed >= 200;
+  if (productive) return null; // earned its output — not a finding
   return {
     type: "output_heavy",
-    severity: out >= 80_000 ? "high" : "medium",
-    title: `Generated ${Math.round(out / 1000)}k output tokens`,
+    severity: "low",
+    title: `Output-heavy run (${Math.round(out / 1000)}k output tokens)`,
     explanation:
-      "This run produced a large amount of model output. Output tokens are the most expensive kind, and high output often means verbose explanations or regenerating large files wholesale.",
+      "This run generated a lot of model output but changed little on disk. That can mean verbose responses or rewriting whole files instead of small edits — output tokens are the most expensive kind.",
     suggestedFix:
       "Ask for concise responses and targeted edits; avoid rewriting whole files when a small edit will do.",
     count: out,

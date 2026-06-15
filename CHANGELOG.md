@@ -14,6 +14,13 @@ All notable changes to this project are documented here. The format is based on
 - `report` no longer prints a misleading all-zeros receipt when run outside a project.
   If the current project has no usable session, it explains that `report` is
   per-project and lists your recent agent-tab projects to `cd` into.
+- The `output_heavy` detector is now contextual: raw output volume scales with session
+  length, so it only flags output that's large *and* disproportionate to durable change
+  (few files / tiny diff), and it's now low-severity. A long, productive run no longer
+  gets flagged for "wasting" output tokens.
+- The receipt's "Biggest waste" headline only appears for actionable (high/medium)
+  findings. Clean runs say so and list any minor items under "Notes" — the headline no
+  longer contradicts a low bloat score.
 
 ## [0.1.0] — 2026-06-15
 

@@ -47,26 +47,35 @@ export function renderReceipt(r: RunReport): string {
   );
   L.push("");
 
-  // Biggest waste + fix (the viral lines).
-  const top = r.findings[0];
-  if (top) {
+  // Headline only for genuinely actionable (high/medium) findings — don't cry
+  // "biggest waste" on a clean run. Low-severity items become quiet notes.
+  const actionable = r.findings.filter(
+    (f) => f.severity === "high" || f.severity === "medium",
+  );
+  const notes = r.findings.filter((f) => f.severity === "low");
+  const headline = actionable[0];
+
+  if (headline) {
     L.push(`  ${c.bold("Biggest waste:")}`);
-    L.push(`  ${c.yellow(top.title)}`);
-    L.push(`  ${c.dim(oneLine(top.explanation, 76))}`);
+    L.push(`  ${c.yellow(headline.title)}`);
+    L.push(`  ${c.dim(oneLine(headline.explanation, 76))}`);
     L.push("");
     L.push(`  ${c.bold("Fix:")}`);
-    L.push(`  ${c.green(oneLine(top.suggestedFix, 76))}`);
+    L.push(`  ${c.green(oneLine(headline.suggestedFix, 76))}`);
     L.push("");
+    const rest = [...actionable.slice(1), ...notes];
+    if (rest.length) {
+      L.push(c.dim("  Other findings:"));
+      for (const f of rest.slice(0, 5)) L.push(`   ${severityTag(f)} ${f.title}`);
+      L.push("");
+    }
+    L.push(c.dim(`  run agent-tab fix  to turn the biggest wastes into agent rules`));
   } else {
-    L.push(`  ${c.green("Clean run — no obvious waste detected. ")}`);
-    L.push("");
-  }
-
-  // Remaining findings, compact.
-  if (r.findings.length > 1) {
-    L.push(c.dim("  Other findings:"));
-    for (const f of r.findings.slice(1, 6)) {
-      L.push(`   ${severityTag(f)} ${f.title}`);
+    L.push(`  ${c.green("Clean run — no obvious waste detected.")}`);
+    if (notes.length) {
+      L.push("");
+      L.push(c.dim("  Notes:"));
+      for (const f of notes.slice(0, 4)) L.push(`   ${c.gray("·")} ${c.dim(f.title)}`);
     }
     L.push("");
   }
@@ -79,7 +88,6 @@ export function renderReceipt(r: RunReport): string {
       c.gray("  (transcript not found — token/cost numbers unavailable for this run)"),
     );
   }
-  L.push(c.dim(`  run agent-tab fix  to turn the biggest wastes into agent rules`));
   L.push("");
 
   return L.join("\n");
