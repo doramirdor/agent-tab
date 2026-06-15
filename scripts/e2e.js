@@ -23,6 +23,7 @@ function hook(payload) {
     cwd: tmp,
     input: JSON.stringify(payload),
     encoding: "utf8",
+    env: { ...process.env, AGENT_TAB_HOME: path.join(tmp, ".atab") },
   });
   if (r.status !== 0) throw new Error("hook exited nonzero: " + r.stderr);
 }

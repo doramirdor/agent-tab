@@ -2,8 +2,9 @@
 
 import * as fs from "fs";
 import { analyze, loadEvents } from "../core/analyze";
-import { dbPath, latestSessionId, runsDir, sessionJsonlPath } from "../core/paths";
+import { dbPath, latestSessionId, projectRoot, runsDir, sessionJsonlPath } from "../core/paths";
 import { renderReceipt } from "../core/receipt";
+import { listProjects } from "../core/registry";
 import { listRuns, saveRun } from "../core/storage";
 import type { RunReport } from "../core/types";
 import { c, fmtUsd } from "../core/util";
@@ -39,13 +40,15 @@ export function runReport(argv: string[]): number {
 
   const sessionId = opts.session || latestSessionId();
   if (!sessionId) {
+    if (opts.json) {
+      process.stdout.write(JSON.stringify({ error: "no runs in this project" }) + "\n");
+      return 1;
+    }
     process.stderr.write(
-      c.yellow("No runs found yet.\n") +
-        c.dim(
-          `Run  npx agent-tab install  then use Claude Code in this project.\n` +
-            `(looked in ${runsDir()})\n`,
-        ),
+      c.yellow("No agent-tab runs in this project.\n") +
+        c.dim(`(looked in ${runsDir()})\n`),
     );
+    printWhereData();
     return 1;
   }
 
@@ -61,17 +64,53 @@ export function runReport(argv: string[]): number {
     transcriptPath: opts.transcript,
   });
 
-  if (!opts.noSave) {
-    saveRun(dbPath(), report);
-  }
-
   if (opts.json) {
     process.stdout.write(JSON.stringify(report, null, 2) + "\n");
     return 0;
   }
 
+  // If we auto-picked an unusable session (no transcript, no activity), the user is
+  // almost certainly in the wrong directory — guide them instead of showing zeros.
+  if (!opts.session && isEmptyRun(report)) {
+    process.stdout.write(
+      c.yellow("\n  Nothing to report in this project yet.\n") +
+        c.dim(
+          `  The latest session here (${sessionId.slice(0, 8)}) has no token data —\n` +
+            `  report reads ./.agent-tab/runs under the current project.\n`,
+        ),
+    );
+    printWhereData();
+    return 0;
+  }
+
+  if (!opts.noSave) saveRun(dbPath(), report);
   process.stdout.write(renderReceipt(report) + "\n");
   return 0;
+}
+
+function isEmptyRun(r: RunReport): boolean {
+  return (
+    !r.tokens.found &&
+    r.toolCalls === 0 &&
+    r.commandsRun === 0 &&
+    r.files.filesTouched === 0
+  );
+}
+
+function printWhereData(): void {
+  const here = projectRoot();
+  const projects = listProjects().filter((p) => p.path !== here);
+  if (projects.length === 0) return;
+  const L: string[] = [];
+  L.push("");
+  L.push(c.dim("  Your recent agent-tab projects:"));
+  for (const p of projects.slice(0, 8)) {
+    L.push(`   ${c.cyan(p.path)}`);
+  }
+  L.push("");
+  L.push(c.dim("  cd into one and run  agent-tab report  (it's per-project)."));
+  L.push("");
+  process.stdout.write(L.join("\n"));
 }
 
 function printHistory(json: boolean): number {

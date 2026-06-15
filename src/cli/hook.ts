@@ -8,6 +8,7 @@ import * as fs from "fs";
 import { snapshot } from "../core/git";
 import { debug } from "../core/log";
 import { runsDir, sessionJsonlPath } from "../core/paths";
+import { recordProject } from "../core/registry";
 import type { AgentEvent } from "../core/types";
 import { countLines } from "../core/util";
 
@@ -187,13 +188,14 @@ export async function runHook(argv: string[]): Promise<number> {
     if (event === "session_end" && typeof payload.reason === "string")
       ev.reason = payload.reason;
 
-    // Git snapshots only on lifecycle boundaries (keeps per-tool hooks fast).
+    // Git snapshots + registry only on lifecycle boundaries (keeps per-tool hooks fast).
     if (event === "session_start" || event === "stop" || event === "session_end") {
       try {
         ev.git = snapshot(cwd);
       } catch {
         ev.git = null;
       }
+      recordProject(cwd);
     }
 
     // Append the line.

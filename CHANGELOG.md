@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Added
+- Global project registry (`~/.agent-tab/projects.json`, override with `AGENT_TAB_HOME`).
+  Hooks record each project on lifecycle events so commands can find your data.
+
+### Changed
+- `report` no longer prints a misleading all-zeros receipt when run outside a project.
+  If the current project has no usable session, it explains that `report` is
+  per-project and lists your recent agent-tab projects to `cd` into.
+
 ## [0.1.0] — 2026-06-15
 
 First release. Local-first cost + bloat receipts for coding agents.
