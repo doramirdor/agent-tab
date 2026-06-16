@@ -1,13 +1,13 @@
 # Architecture
 
-Agent Tab turns an agent run into a receipt. The pipeline:
+BarTab turns an agent run into a receipt. The pipeline:
 
 ```
 Claude Code / Codex
    │  lifecycle hooks (SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, …)
    ▼
-agent-tab hook            collect — append one compact JSON line per event
-   │                      .agent-tab/runs/<session>.jsonl
+bartab hook            collect — append one compact JSON line per event
+   │                      .bartab/runs/<session>.jsonl
    ▼
 analyze()                 orchestrate
    ├── transcript.ts / codex.ts   real token usage (deduped by request id)
@@ -24,9 +24,9 @@ RunReport ──► receipt.ts (terminal)
 
 ## Collection (the hook)
 
-`install` registers `agent-tab hook --tool <claude-code|codex>` at each lifecycle point.
+`install` registers `bartab hook --tool <claude-code|codex>` at each lifecycle point.
 On every event the hook reads the payload from **stdin**, normalizes it, and appends a
-line to `.agent-tab/runs/<session_id>.jsonl`. It:
+line to `.bartab/runs/<session_id>.jsonl`. It:
 
 - never writes to **stdout** (agents can inject hook stdout into the model) and always
   exits 0 (a hook must never block the agent);

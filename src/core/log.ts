@@ -1,24 +1,24 @@
 // Opt-in debug logging. Hooks are intentionally silent (they must not write to
 // stdout — Claude Code/Codex can inject hook stdout into the model), which makes
-// "why didn't my hook fire?" hard to debug. Set AGENT_TAB_DEBUG=1 to append
-// diagnostics to <project>/.agent-tab/agent-tab.log. Never throws.
+// "why didn't my hook fire?" hard to debug. Set BARTAB_DEBUG=1 to append
+// diagnostics to <project>/.bartab/bartab.log. Never throws.
 
 import * as fs from "fs";
 import * as path from "path";
-import { agentTabDir } from "./paths";
+import { bartabDir } from "./paths";
 
 export function debugEnabled(): boolean {
-  const v = process.env.AGENT_TAB_DEBUG;
+  const v = process.env.BARTAB_DEBUG;
   return Boolean(v) && v !== "0" && v !== "false";
 }
 
 export function debug(msg: string, cwd?: string): void {
   if (!debugEnabled()) return;
   try {
-    const dir = agentTabDir(cwd);
+    const dir = bartabDir(cwd);
     fs.mkdirSync(dir, { recursive: true });
     fs.appendFileSync(
-      path.join(dir, "agent-tab.log"),
+      path.join(dir, "bartab.log"),
       `[${new Date().toISOString()}] ${msg}\n`,
     );
   } catch {

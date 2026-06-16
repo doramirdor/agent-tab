@@ -1,4 +1,4 @@
-// Shared types for the agent-tab core.
+// Shared types for the bartab core.
 
 /** A normalized event line as written by the hook collector to the per-session JSONL. */
 export interface AgentEvent {

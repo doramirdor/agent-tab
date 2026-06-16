@@ -7,8 +7,8 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const BIN = path.resolve(__dirname, "..", "bin", "agent-tab.js");
-const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "agent-tab-e2e-"));
+const BIN = path.resolve(__dirname, "..", "bin", "bartab.js");
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "bartab-e2e-"));
 const SID = "test-session-0001";
 const transcript = path.join(tmp, ".transcript.jsonl");
 
@@ -23,7 +23,7 @@ function hook(payload) {
     cwd: tmp,
     input: JSON.stringify(payload),
     encoding: "utf8",
-    env: { ...process.env, AGENT_TAB_HOME: path.join(tmp, ".atab") },
+    env: { ...process.env, BARTAB_HOME: path.join(tmp, ".atab") },
   });
   if (r.status !== 0) throw new Error("hook exited nonzero: " + r.stderr);
 }
@@ -129,12 +129,12 @@ process.stdout.write(cli(["fix", "--print"]).stdout);
 
 console.log("\n===== share =====");
 process.stdout.write(cli(["share"]).stdout);
-const svg = path.join(tmp, ".agent-tab", "receipts", SID + ".svg");
+const svg = path.join(tmp, ".bartab", "receipts", SID + ".svg");
 console.log("svg exists:", fs.existsSync(svg), "bytes:", fs.existsSync(svg) ? fs.statSync(svg).size : 0);
 
 console.log("\n===== share --png =====");
 process.stdout.write(cli(["share", "--png"]).stdout);
-const png = path.join(tmp, ".agent-tab", "receipts", SID + ".png");
+const png = path.join(tmp, ".bartab", "receipts", SID + ".png");
 const pngOk = fs.existsSync(png) && fs.readFileSync(png).slice(1, 4).toString() === "PNG";
 expect("png written with PNG magic bytes", pngOk, true);
 

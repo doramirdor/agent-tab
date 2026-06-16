@@ -7,7 +7,7 @@ All notable changes to this project are documented here. The format is based on
 ## [Unreleased]
 
 ### Added
-- Global project registry (`~/.agent-tab/projects.json`, override with `AGENT_TAB_HOME`).
+- Global project registry (`~/.bartab/projects.json`, override with `BARTAB_HOME`).
   Hooks record each project on lifecycle events so commands can find your data.
 
 ### Changed
@@ -15,7 +15,7 @@ All notable changes to this project are documented here. The format is based on
 wraps the full text to your terminal width.
 - `report` no longer prints a misleading all-zeros receipt when run outside a project.
   If the current project has no usable session, it explains that `report` is
-  per-project and lists your recent agent-tab projects to `cd` into.
+  per-project and lists your recent bartab projects to `cd` into.
 - The `output_heavy` detector is now contextual: raw output volume scales with session
   length, so it only flags output that's large *and* disproportionate to durable change
   (few files / tiny diff), and it's now low-severity. A long, productive run no longer
@@ -32,7 +32,7 @@ First release. Local-first cost + bloat receipts for coding agents.
 - `install` / `uninstall` — wire hooks into Claude Code (`.claude/settings.json`) or
   Codex (`.codex/hooks.json`, via `--codex`). Idempotent and reversible.
 - `hook` — the collector. Reads a hook payload from stdin and appends a compact event
-  to `.agent-tab/runs/<session>.jsonl`. Wrapped to never block or slow the agent.
+  to `.bartab/runs/<session>.jsonl`. Wrapped to never block or slow the agent.
 - `report` — a per-run receipt: accurate token usage, estimated cost, file changes,
   retries, a 0–100 bloat score, and the biggest waste with a concrete fix.
 - `summary` — local aggregate of recent runs (your weekly agent bill).
@@ -45,7 +45,7 @@ First release. Local-first cost + bloat receipts for coding agents.
   `token_count` lines (OpenAI's cached-input semantics handled).
 - 12 waste detectors and a transparent, capped bloat score.
 - Local history via the built-in `node:sqlite` (degrades gracefully when unavailable).
-- Opt-in debug logging (`AGENT_TAB_DEBUG=1` → `.agent-tab/agent-tab.log`).
+- Opt-in debug logging (`BARTAB_DEBUG=1` → `.bartab/bartab.log`).
 
-[Unreleased]: https://github.com/doramirdor/agent-tab/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/doramirdor/agent-tab/releases/tag/v0.1.0
+[Unreleased]: https://github.com/doramirdor/bartab/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/doramirdor/bartab/releases/tag/v0.1.0

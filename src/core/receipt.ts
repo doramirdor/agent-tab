@@ -27,7 +27,7 @@ export function renderReceipt(r: RunReport): string {
     r.tokens.inputTokens + r.tokens.cacheReadTokens + r.tokens.cacheWrite5mTokens + r.tokens.cacheWrite1hTokens;
 
   L.push("");
-  L.push(c.bold(c.cyan("  Agent Tab") + c.dim("  ·  " + toolLabel(r.tool))));
+  L.push(c.bold(c.cyan("  BarTab") + c.dim("  ·  " + toolLabel(r.tool))));
   L.push("");
 
   // Headline cost.
@@ -76,7 +76,7 @@ export function renderReceipt(r: RunReport): string {
       for (const f of rest.slice(0, 5)) L.push(`   ${severityTag(f)} ${f.title}`);
       L.push("");
     }
-    L.push(c.dim(`  run agent-tab fix  to turn the biggest wastes into agent rules`));
+    L.push(c.dim(`  run bartab fix  to turn the biggest wastes into agent rules`));
   } else {
     L.push(`  ${c.green("Clean run — no obvious waste detected.")}`);
     if (notes.length) {
@@ -123,12 +123,12 @@ function bloatBar(score: number): string {
 
 /** Plain-text (no ANSI) receipt, for piping/sharing. */
 export function renderReceiptPlain(r: RunReport): string {
-  const prev = process.env.AGENT_TAB_NO_COLOR;
-  process.env.AGENT_TAB_NO_COLOR = "1";
+  const prev = process.env.BARTAB_NO_COLOR;
+  process.env.BARTAB_NO_COLOR = "1";
   try {
     return renderReceipt(r);
   } finally {
-    if (prev === undefined) delete process.env.AGENT_TAB_NO_COLOR;
-    else process.env.AGENT_TAB_NO_COLOR = prev;
+    if (prev === undefined) delete process.env.BARTAB_NO_COLOR;
+    else process.env.BARTAB_NO_COLOR = prev;
   }
 }

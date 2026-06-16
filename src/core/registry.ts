@@ -1,7 +1,7 @@
-// A tiny global registry of projects that have agent-tab data. Because hooks fire in
+// A tiny global registry of projects that have bartab data. Because hooks fire in
 // every directory (global install), `report`/`summary` are per-project and it's easy to
 // run them from the wrong place. The registry lets those commands point you at where
-// your data actually is. Stored at ~/.agent-tab/projects.json. Never throws.
+// your data actually is. Stored at ~/.bartab/projects.json. Never throws.
 
 import * as fs from "fs";
 import * as os from "os";
@@ -14,7 +14,7 @@ export interface ProjectEntry {
 }
 
 export function globalDir(): string {
-  return process.env.AGENT_TAB_HOME || path.join(os.homedir(), ".agent-tab");
+  return process.env.BARTAB_HOME || path.join(os.homedir(), ".bartab");
 }
 
 function registryPath(): string {

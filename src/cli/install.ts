@@ -1,4 +1,4 @@
-// `agent-tab install` / `uninstall` — manage Claude Code and Codex hooks.
+// `bartab install` / `uninstall` — manage Claude Code and Codex hooks.
 
 import * as fs from "fs";
 import * as os from "os";
@@ -6,7 +6,7 @@ import * as path from "path";
 import { projectRoot } from "../core/paths";
 import { c } from "../core/util";
 
-const MARKER = "agent-tab";
+const MARKER = "bartab";
 
 interface HookCmd {
   type: "command";
@@ -47,13 +47,16 @@ const CODEX: AgentSpec = {
 function hookCommand(tool: string): string {
   // dist/cli/install.js -> package root is two levels up.
   const pkgRoot = path.resolve(__dirname, "..", "..");
-  const binPath = path.join(pkgRoot, "bin", "agent-tab.js");
+  const binPath = path.join(pkgRoot, "bin", "bartab.js");
   return `"${process.execPath}" "${binPath}" hook --tool ${tool}`;
 }
 
-function isAgentTabEntry(entry: HookEntry): boolean {
+function isBartabEntry(entry: HookEntry): boolean {
   return (entry.hooks || []).some(
-    (h) => typeof h.command === "string" && h.command.includes(MARKER),
+    (h) =>
+      typeof h.command === "string" &&
+      // Match our hooks, including the legacy "agent-tab" name so renames migrate.
+      (h.command.includes(MARKER) || h.command.includes("agent-tab")),
   );
 }
 
@@ -96,7 +99,7 @@ function buildHooks(spec: AgentSpec, existing: Record<string, HookEntry[]>): Rec
   const cmd = hookCommand(spec.tool);
   const hooks: Record<string, HookEntry[]> = { ...existing };
   const addEntry = (event: string, entry: HookEntry): void => {
-    const kept = (hooks[event] || []).filter((e) => !isAgentTabEntry(e));
+    const kept = (hooks[event] || []).filter((e) => !isBartabEntry(e));
     kept.push(entry);
     hooks[event] = kept;
   };
@@ -155,7 +158,7 @@ export function runUninstall(argv: string[]): number {
     let local = 0;
     for (const event of Object.keys(hooks)) {
       const before = hooks[event].length;
-      hooks[event] = hooks[event].filter((e) => !isAgentTabEntry(e));
+      hooks[event] = hooks[event].filter((e) => !isBartabEntry(e));
       local += before - hooks[event].length;
       if (hooks[event].length === 0) delete hooks[event];
     }
@@ -168,8 +171,8 @@ export function runUninstall(argv: string[]): number {
   }
   process.stdout.write(
     removed > 0
-      ? c.green(`Removed ${removed} agent-tab hook${removed === 1 ? "" : "s"} from ${touched} file${touched === 1 ? "" : "s"}\n`)
-      : c.dim("No agent-tab hooks found to remove.\n"),
+      ? c.green(`Removed ${removed} bartab hook${removed === 1 ? "" : "s"} from ${touched} file${touched === 1 ? "" : "s"}\n`)
+      : c.dim("No bartab hooks found to remove.\n"),
   );
   return 0;
 }
@@ -183,9 +186,9 @@ function ensureGitignore(): void {
     } catch {
       /* no file yet */
     }
-    if (!/^\.agent-tab\/?\s*$/m.test(content)) {
+    if (!/^\.bartab\/?\s*$/m.test(content)) {
       const prefix = content && !content.endsWith("\n") ? "\n" : "";
-      fs.appendFileSync(gi, `${prefix}.agent-tab/\n`);
+      fs.appendFileSync(gi, `${prefix}.bartab/\n`);
     }
   } catch {
     /* best effort */
@@ -196,7 +199,7 @@ function printInstalled(spec: AgentSpec, target: string): void {
   const L: string[] = [];
   const name = spec.tool === "codex" ? "Codex" : "Claude Code";
   L.push("");
-  L.push(c.green(c.bold(`  ✓ Agent Tab installed for ${name}`)));
+  L.push(c.green(c.bold(`  ✓ BarTab installed for ${name}`)));
   L.push("");
   L.push(`  Hooks added to ${c.cyan(target)}`);
   L.push(
@@ -212,10 +215,10 @@ function printInstalled(spec: AgentSpec, target: string): void {
   }
   L.push("  Next:");
   L.push(`    1. Run ${name} as usual in this project`);
-  L.push(`    2. After it works, run  ${c.bold("npx agent-tab report")}`);
-  L.push(`    3. Turn waste into rules:  ${c.bold("npx agent-tab fix")}`);
+  L.push(`    2. After it works, run  ${c.bold("npx bartab report")}`);
+  L.push(`    3. Turn waste into rules:  ${c.bold("npx bartab fix")}`);
   L.push("");
-  L.push(c.dim(`  Uninstall anytime with  npx agent-tab uninstall${spec.tool === "codex" ? " --codex" : ""}`));
+  L.push(c.dim(`  Uninstall anytime with  npx bartab uninstall${spec.tool === "codex" ? " --codex" : ""}`));
   L.push("");
   process.stdout.write(L.join("\n"));
 }

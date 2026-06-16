@@ -49,7 +49,7 @@ export function snapshot(cwd: string): GitSnapshot {
     if (!line.startsWith("?? ")) continue;
     const p = line.slice(3);
     // Never attribute our own data dir to the agent's work.
-    if (p === ".agent-tab/" || p.startsWith(".agent-tab/")) continue;
+    if (p === ".bartab/" || p.startsWith(".bartab/")) continue;
     untracked.push(p);
   }
 

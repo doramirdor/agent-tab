@@ -1,28 +1,28 @@
-// Resolve where agent-tab stores its data for a given working directory.
+// Resolve where bartab stores its data for a given working directory.
 
 import * as fs from "fs";
 import * as path from "path";
 import { repoRoot } from "./git";
 
-/** Anchor the .agent-tab dir at the git root when available, else the cwd. */
+/** Anchor the .bartab dir at the git root when available, else the cwd. */
 export function projectRoot(cwd: string = process.cwd()): string {
   return repoRoot(cwd) || cwd;
 }
 
-export function agentTabDir(cwd: string = process.cwd()): string {
-  return path.join(projectRoot(cwd), ".agent-tab");
+export function bartabDir(cwd: string = process.cwd()): string {
+  return path.join(projectRoot(cwd), ".bartab");
 }
 
 export function runsDir(cwd: string = process.cwd()): string {
-  return path.join(agentTabDir(cwd), "runs");
+  return path.join(bartabDir(cwd), "runs");
 }
 
 export function receiptsDir(cwd: string = process.cwd()): string {
-  return path.join(agentTabDir(cwd), "receipts");
+  return path.join(bartabDir(cwd), "receipts");
 }
 
 export function dbPath(cwd: string = process.cwd()): string {
-  return path.join(agentTabDir(cwd), "agent-tab.db");
+  return path.join(bartabDir(cwd), "bartab.db");
 }
 
 export function sessionJsonlPath(sessionId: string, cwd: string = process.cwd()): string {

@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agent Tab — a spending tab for your coding agent</title>
-<meta name="description" content="Local-first cost and bloat receipts for Claude Code and Codex. npx agent-tab install.">
-<meta property="og:title" content="Agent Tab">
+<title>BarTab — a spending tab for your coding agent</title>
+<meta name="description" content="Local-first cost and bloat receipts for Claude Code and Codex. npx bartab install.">
+<meta property="og:title" content="BarTab">
 <meta property="og:description" content="A spending tab for your coding agent. Local-first cost + bloat receipts for Claude Code and Codex.">
 <meta name="theme-color" content="#0a0b0d">
 <style>
@@ -62,8 +62,8 @@
 <div class="wrap">
 
   <nav>
-    <span class="brand">Agent Tab</span>
-    <a class="gh" href="https://github.com/doramirdor/agent-tab">GitHub →</a>
+    <span class="brand">BarTab</span>
+    <a class="gh" href="https://github.com/doramirdor/bartab">GitHub →</a>
   </nav>
 
   <header>
@@ -71,15 +71,15 @@
     <h1>A spending tab for<br>your coding agent.</h1>
     <p class="sub">A receipt after every run — real cost, a bloat score, and the one fix that would have saved the most. Nothing leaves your machine.</p>
     <div class="cta">
-      <span class="install"><span class="d">$</span>&nbsp;npx agent-tab install</span>
-      <a class="ghbtn" href="https://github.com/doramirdor/agent-tab">View source →</a>
+      <span class="install"><span class="d">$</span>&nbsp;npx bartab install</span>
+      <a class="ghbtn" href="https://github.com/doramirdor/bartab">View source →</a>
     </div>
   </header>
 
   <div class="shot">
     <svg xmlns="http://www.w3.org/2000/svg" width="680" height="430" viewBox="0 0 680 430" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" role="img" aria-label="Example receipt: $1.42 estimated, bloat score 87 of 100, biggest waste re-read package-lock.json 7 times, fix add lockfiles to ignore rules.">
       <rect width="680" height="430" rx="16" fill="#111216"/>
-      <text x="36" y="50" font-size="14" font-weight="600" fill="#edeef0">Agent Tab</text>
+      <text x="36" y="50" font-size="14" font-weight="600" fill="#edeef0">BarTab</text>
       <text x="36" y="70" font-size="12.5" fill="#9ca1a9">Claude Code run receipt</text>
       <text x="36" y="132" font-family="ui-monospace,monospace" font-size="46" font-weight="700" fill="#edeef0">$1.42</text>
       <text x="38" y="154" font-size="12.5" fill="#9ca1a9">estimated run cost</text>
@@ -98,7 +98,7 @@
       <text x="36" y="288" font-size="18" font-weight="600" fill="#f3b14e">Re-read package-lock.json 7 times</text>
       <text x="36" y="332" font-size="12" font-weight="600" fill="#3ecf8e" letter-spacing="0.06em">FIX</text>
       <text x="36" y="358" font-size="14.5" fill="#cfd3d8">Add lockfiles to your agent ignore rules.</text>
-      <text x="644" y="408" text-anchor="end" font-size="12" fill="#666b73">npx agent-tab</text>
+      <text x="644" y="408" text-anchor="end" font-size="12" fill="#666b73">npx bartab</text>
     </svg>
   </div>
 
@@ -108,9 +108,9 @@
       <div class="feat"><h3>Accurate cost</h3><p>Real token usage from the agent's own transcript, deduped per request, with the cache split. Labeled estimated, never faked.</p></div>
       <div class="feat"><h3>Bloat score</h3><p>A transparent 0–100 score for how wasteful a run was, capped per dimension so nothing dominates.</p></div>
       <div class="feat"><h3>Waste detectors</h3><p>Re-read files, lockfile reads, failing-test loops, dependency creep, edit churn — each with a concrete fix.</p></div>
-      <div class="feat"><h3>Rules that stick</h3><p><code>agent-tab fix</code> writes the recurring wastes into your <code>CLAUDE.md</code> so the next run is leaner.</p></div>
+      <div class="feat"><h3>Rules that stick</h3><p><code>bartab fix</code> writes the recurring wastes into your <code>CLAUDE.md</code> so the next run is leaner.</p></div>
       <div class="feat"><h3>Shareable receipt</h3><p>Export a card as SVG, PNG, or HTML — the painful, useful thing worth posting.</p></div>
-      <div class="feat"><h3>Weekly bill</h3><p><code>agent-tab summary</code> totals your recent runs, all on disk. Plus per-run history.</p></div>
+      <div class="feat"><h3>Weekly bill</h3><p><code>bartab summary</code> totals your recent runs, all on disk. Plus per-run history.</p></div>
     </div>
   </section>
 
@@ -119,27 +119,27 @@
     <pre>Claude Code / Codex
    <span class="f">│  lifecycle hooks fire on every tool call</span>
    ▼
-agent-tab hook   <span class="f">→  .agent-tab/runs/&lt;session&gt;.jsonl</span>
+bartab hook   <span class="f">→  .bartab/runs/&lt;session&gt;.jsonl</span>
    ▼
 analyzer   <span class="f">→  transcript tokens · git diff · detectors</span>
-   ├─  <span class="a">receipt</span>       agent-tab report
-   ├─  <span class="a">weekly bill</span>   agent-tab summary
-   ├─  <span class="a">share card</span>    agent-tab share --png
-   └─  <span class="a">agent rules</span>   agent-tab fix</pre>
+   ├─  <span class="a">receipt</span>       bartab report
+   ├─  <span class="a">weekly bill</span>   bartab summary
+   ├─  <span class="a">share card</span>    bartab share --png
+   └─  <span class="a">agent rules</span>   bartab fix</pre>
   </section>
 
   <section class="codex">
     <h2>Codex too</h2>
-    <pre>$ npx agent-tab install --codex</pre>
+    <pre>$ npx bartab install --codex</pre>
     <p>Same flow — tokens come from Codex's on-disk rollout. One note: Codex skips a new command hook until you trust it, so run <code>/hooks</code> inside Codex once after installing.</p>
   </section>
 
   <footer>
     <div class="links">
-      <a href="https://github.com/doramirdor/agent-tab">GitHub</a>
-      <a href="https://github.com/doramirdor/agent-tab#readme">Docs</a>
-      <a href="https://github.com/doramirdor/agent-tab/blob/main/docs/ARCHITECTURE.md">Architecture</a>
-      <a href="https://github.com/doramirdor/agent-tab/blob/main/CHANGELOG.md">Changelog</a>
+      <a href="https://github.com/doramirdor/bartab">GitHub</a>
+      <a href="https://github.com/doramirdor/bartab#readme">Docs</a>
+      <a href="https://github.com/doramirdor/bartab/blob/main/docs/ARCHITECTURE.md">Architecture</a>
+      <a href="https://github.com/doramirdor/bartab/blob/main/CHANGELOG.md">Changelog</a>
     </div>
     <div class="meta">MIT · zero required runtime deps</div>
   </footer>

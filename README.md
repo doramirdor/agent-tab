@@ -1,15 +1,15 @@
-# Agent Tab
+# BarTab
 
-[![CI](https://github.com/doramirdor/agent-tab/actions/workflows/ci.yml/badge.svg)](https://github.com/doramirdor/agent-tab/actions/workflows/ci.yml)
+[![CI](https://github.com/doramirdor/bartab/actions/workflows/ci.yml/badge.svg)](https://github.com/doramirdor/bartab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%E2%89%A522.5-43853d.svg)](https://nodejs.org)
 
 **A spending tab for your coding agent.** Local-first cost + bloat receipts for Claude Code and Codex.
 
-🌐 [doramirdor.github.io/agent-tab](https://doramirdor.github.io/agent-tab/) · 📐 [Architecture](docs/ARCHITECTURE.md) · 🤝 [Contributing](CONTRIBUTING.md) · 🔒 [Security](SECURITY.md)
+🌐 [doramirdor.github.io/bartab](https://doramirdor.github.io/bartab/) · 📐 [Architecture](docs/ARCHITECTURE.md) · 🤝 [Contributing](CONTRIBUTING.md) · 🔒 [Security](SECURITY.md)
 
 ```text
-  Agent Tab  ·  Claude Code
+  BarTab  ·  Claude Code
 
   $1.42 estimated run cost
   213k input tokens  (claude-opus-4-8)
@@ -32,15 +32,15 @@ It runs entirely on your machine. No account, no upload, no API key.
 ## Quick start
 
 ```bash
-npx agent-tab install     # add Claude Code hooks to this project
+npx bartab install     # add Claude Code hooks to this project
 # ... use Claude Code as usual ...
-npx agent-tab report      # print the receipt for the last run
-npx agent-tab summary     # your weekly agent bill across runs
-npx agent-tab fix         # turn the biggest wastes into CLAUDE.md rules
-npx agent-tab share --png # render a shareable card
+npx bartab report      # print the receipt for the last run
+npx bartab summary     # your weekly agent bill across runs
+npx bartab fix         # turn the biggest wastes into CLAUDE.md rules
+npx bartab share --png # render a shareable card
 ```
 
-Using Codex too? `npx agent-tab install --codex`.
+Using Codex too? `npx bartab install --codex`.
 
 ## How it works
 
@@ -48,16 +48,16 @@ Using Codex too? `npx agent-tab install --codex`.
 Claude Code / Codex
    │  (lifecycle hooks: SessionStart, PreToolUse, PostToolUse, Stop, …)
    ▼
-agent-tab hook  ──►  .agent-tab/runs/<session>.jsonl   (append-only event log)
+bartab hook  ──►  .bartab/runs/<session>.jsonl   (append-only event log)
    │
    ▼
 analyzer  ──►  transcript/rollout token usage + git diff + waste detectors
    │
-   ├─►  receipt (terminal)             agent-tab report
-   ├─►  weekly bill (terminal)         agent-tab summary
-   ├─►  shareable card (SVG/PNG/HTML)  agent-tab share
-   ├─►  agent rules (CLAUDE.md)        agent-tab fix
-   └─►  history (SQLite)               agent-tab report --history
+   ├─►  receipt (terminal)             bartab report
+   ├─►  weekly bill (terminal)         bartab summary
+   ├─►  shareable card (SVG/PNG/HTML)  bartab share
+   ├─►  agent rules (CLAUDE.md)        bartab fix
+   └─►  history (SQLite)               bartab report --history
 ```
 
 - **`install`** writes hooks into `.claude/settings.json` (or `--global` / `--local`). It's idempotent and reversible (`uninstall`).
@@ -70,7 +70,7 @@ Token counts come from the real Claude Code transcript (`message.usage`), not es
 
 It's still labeled **estimated** because pricing for some legacy models is approximate and discount tiers can't be detected. We never show false precision.
 
-> One subtlety handled correctly: a single API response is written to the transcript as multiple lines (one per content block) that all repeat the same `usage`. Agent Tab dedupes by request id so tokens aren't counted 3–5× over.
+> One subtlety handled correctly: a single API response is written to the transcript as multiple lines (one per content block) that all repeat the same `usage`. BarTab dedupes by request id so tokens aren't counted 3–5× over.
 
 ## Bloat score
 
@@ -95,26 +95,26 @@ Re-read files, lockfile reads, `node_modules`/`dist` reads, repeated commands, f
 Codex has official hooks too, so the same flow works:
 
 ```bash
-npx agent-tab install --codex   # writes .codex/hooks.json (--global for ~/.codex)
+npx bartab install --codex   # writes .codex/hooks.json (--global for ~/.codex)
 ```
 
-Two Codex specifics Agent Tab handles for you:
+Two Codex specifics BarTab handles for you:
 
 - **Tokens** come from Codex's on-disk rollout (`~/.codex/sessions/.../rollout-*.jsonl`, the `token_count` lines), normalized so the shared cost math applies. OpenAI pricing is approximate and the receipt says so.
 - **Trust model:** Codex skips a freshly-written command hook until you trust it — run `/hooks` inside Codex once after installing (or launch with `--dangerously-bypass-hook-trust`).
 
-## `agent-tab fix`
+## `bartab fix`
 
 Writes a managed block into `CLAUDE.md` (and `AGENTS.md` with `--all`), generated from what actually wasted money in your runs:
 
 ```md
-<!-- agent-tab:start -->
+<!-- bartab:start -->
 ## Agent cost rules
 
 - Do not read lockfiles unless explicitly asked. Use the manifest for dependency questions.
 - If the same command fails twice for the same reason, stop and explain the blocker.
 - Prefer editing existing files over creating new ones.
-<!-- agent-tab:end -->
+<!-- bartab:end -->
 ```
 
 The block is re-written in place on each run, so it stays current.
@@ -123,12 +123,12 @@ The block is re-written in place on each run, so it stays current.
 
 | Command | Description |
 |---|---|
-| `agent-tab install [--codex] [--global\|--local] [--print]` | Add hooks to Claude Code (or Codex) |
-| `agent-tab uninstall [--codex]` | Remove agent-tab hooks |
-| `agent-tab report [session] [--json] [--history] [--transcript path] [--no-save]` | Print a receipt |
-| `agent-tab summary [--days n\|--all] [--json]` | Aggregate recent runs (weekly bill) |
-| `agent-tab share [session] [--png] [--html] [--out file]` | Render a shareable card |
-| `agent-tab fix [session] [--all] [--target file] [--print]` | Write rules into CLAUDE.md / AGENTS.md |
+| `bartab install [--codex] [--global\|--local] [--print]` | Add hooks to Claude Code (or Codex) |
+| `bartab uninstall [--codex]` | Remove bartab hooks |
+| `bartab report [session] [--json] [--history] [--transcript path] [--no-save]` | Print a receipt |
+| `bartab summary [--days n\|--all] [--json]` | Aggregate recent runs (weekly bill) |
+| `bartab share [session] [--png] [--html] [--out file]` | Render a shareable card |
+| `bartab fix [session] [--all] [--target file] [--print]` | Write rules into CLAUDE.md / AGENTS.md |
 
 ## Requirements
 
@@ -149,8 +149,8 @@ and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the data flow.
 ## Troubleshooting
 
 Hooks are silent by design (agents can inject hook stdout into the model). If a run isn't
-showing up, set `AGENT_TAB_DEBUG=1` and check `.agent-tab/agent-tab.log`. Confirm the
-hooks are registered with `agent-tab install --print`. On Codex, remember to trust the
+showing up, set `BARTAB_DEBUG=1` and check `.bartab/bartab.log`. Confirm the
+hooks are registered with `bartab install --print`. On Codex, remember to trust the
 hook via `/hooks` after installing.
 
 ## Status

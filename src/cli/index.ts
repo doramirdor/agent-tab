@@ -1,4 +1,4 @@
-// agent-tab CLI dispatch.
+// bartab CLI dispatch.
 
 import { runFix } from "./fix";
 import { runHook } from "./hook";
@@ -14,10 +14,10 @@ const pkg = require("../../package.json") as { version: string };
 
 function help(): void {
   const t = `
-${c.bold(c.cyan("Agent Tab"))} ${c.dim("— a spending tab for your coding agent")}
+${c.bold(c.cyan("BarTab"))} ${c.dim("— a spending tab for your coding agent")}
 
 ${c.bold("Usage")}
-  agent-tab <command> [options]
+  bartab <command> [options]
 
 ${c.bold("Commands")}
   ${c.green("install")}      Add hooks to Claude Code (or Codex with --codex)
@@ -25,16 +25,16 @@ ${c.bold("Commands")}
   ${c.green("summary")}      Aggregate recent runs (your weekly agent bill)
   ${c.green("share")}        Render a shareable card (SVG / PNG / HTML)
   ${c.green("fix")}          Write detected waste as rules into CLAUDE.md / AGENTS.md
-  ${c.green("uninstall")}    Remove agent-tab hooks
+  ${c.green("uninstall")}    Remove bartab hooks
   ${c.green("hook")}         (internal) collect a hook event from stdin
 
 ${c.bold("Examples")}
-  npx agent-tab install
-  npx agent-tab install --codex
-  npx agent-tab report
-  npx agent-tab summary
-  npx agent-tab share --png
-  npx agent-tab fix --all
+  npx bartab install
+  npx bartab install --codex
+  npx bartab report
+  npx bartab summary
+  npx bartab share --png
+  npx bartab fix --all
 
 ${c.bold("Options")}
   install  --codex --global --local --print

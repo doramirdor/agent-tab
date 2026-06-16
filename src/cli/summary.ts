@@ -1,4 +1,4 @@
-// `agent-tab summary` — a local aggregate of recent runs (your weekly agent bill).
+// `bartab summary` — a local aggregate of recent runs (your weekly agent bill).
 
 import { dbPath } from "../core/paths";
 import { sqliteAvailable, summarize } from "../core/storage";
@@ -26,8 +26,8 @@ export function runSummary(argv: string[]): number {
     process.stdout.write(
       c.dim(
         all
-          ? "No saved runs yet. Run  agent-tab report  after a session.\n"
-          : `No runs in the last ${days} days. Try  agent-tab summary --all\n`,
+          ? "No saved runs yet. Run  bartab report  after a session.\n"
+          : `No runs in the last ${days} days. Try  bartab summary --all\n`,
       ),
     );
     return 0;
@@ -41,7 +41,7 @@ export function runSummary(argv: string[]): number {
   const period = all ? "all time" : `last ${days} days`;
   const L: string[] = [];
   L.push("");
-  L.push(c.bold(c.cyan("  Agent Tab") + c.dim(`  ·  bill (${period})`)));
+  L.push(c.bold(c.cyan("  BarTab") + c.dim(`  ·  bill (${period})`)));
   L.push("");
   L.push(`  ${c.bold(fmtUsd(s.totalCostUsd))} ${c.dim("estimated across " + s.runs + " run" + (s.runs === 1 ? "" : "s"))}`);
   L.push(`  ${c.bold(fmtTokens(s.totalInputTokens))} in ${c.dim("·")} ${c.bold(fmtTokens(s.totalOutputTokens))} out ${c.dim("tokens")}`);
@@ -59,7 +59,7 @@ export function runSummary(argv: string[]): number {
     }
   }
   L.push("");
-  L.push(c.dim("  agent-tab fix  bakes the recurring ones into your agent rules"));
+  L.push(c.dim("  bartab fix  bakes the recurring ones into your agent rules"));
   L.push("");
   process.stdout.write(L.join("\n"));
   return 0;
