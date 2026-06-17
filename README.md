@@ -32,15 +32,16 @@ It runs entirely on your machine. No account, no upload, no API key.
 ## Quick start
 
 ```bash
-npx openbar install     # add Claude Code hooks to this project
+npm i -g @amirdor/openbar   # installs the `openbar` command
+openbar install             # add Claude Code hooks to this project
 # ... use Claude Code as usual ...
-npx openbar report      # print the receipt for the last run
-npx openbar summary     # your weekly agent bill across runs
-npx openbar fix         # turn the biggest wastes into CLAUDE.md rules
-npx openbar share --png # render a shareable card
+openbar report              # print the receipt for the last run
+openbar summary             # your weekly agent bill across runs
+openbar fix                 # turn the biggest wastes into CLAUDE.md rules
+openbar share --png         # render a shareable card
 ```
 
-Using Codex too? `npx openbar install --codex`.
+No global install? `npx @amirdor/openbar install`. Using Codex too? add `--codex`.
 
 ## How it works
 
