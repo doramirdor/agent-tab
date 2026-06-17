@@ -28,7 +28,7 @@ function cli(args) {
   return spawnSync("node", [BIN, ...args], {
     cwd: tmp,
     encoding: "utf8",
-    env: { ...process.env, NO_COLOR: "1" },
+    env: { ...process.env, NO_COLOR: "1", BARTAB_HOME: path.join(tmp, ".atab") },
   });
 }
 

@@ -68,7 +68,15 @@ analyzer  ──►  transcript/rollout token usage + git diff + waste detectors
 
 Token counts come from the real Claude Code transcript (`message.usage`), not estimates — including the 5-minute vs 1-hour cache-write split. Cost is computed per-model with Anthropic's cache multipliers (read ×0.10, write-5m ×1.25, write-1h ×2.0).
 
-It's still labeled **estimated** because pricing for some legacy models is approximate and discount tiers can't be detected. We never show false precision.
+It's still labeled **estimated** because pricing for some legacy models is approximate and discount tiers can't be detected. We never show false precision. (Note: on a Claude subscription you don't pay per token — the figure is the API-rate equivalent, a "what this would cost" signal, not an invoice.)
+
+Rates live in a built-in table. To set exact, negotiated, or Batch (50%-off) rates — or price a model BarTab doesn't know — drop a `~/.bartab/pricing.json`:
+
+```json
+{ "claude-opus-4-8": { "input": 5, "output": 25 }, "my-model": { "input": 2, "output": 8 } }
+```
+
+Your file wins over the defaults, stays on your machine, and its rates are treated as exact.
 
 > One subtlety handled correctly: a single API response is written to the transcript as multiple lines (one per content block) that all repeat the same `usage`. BarTab dedupes by request id so tokens aren't counted 3–5× over.
 

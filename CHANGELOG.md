@@ -9,6 +9,10 @@ All notable changes to this project are documented here. The format is based on
 ### Added
 - Global project registry (`~/.bartab/projects.json`, override with `BARTAB_HOME`).
   Hooks record each project on lifecycle events so commands can find your data.
+- Local pricing override: drop a `~/.bartab/pricing.json` (e.g.
+  `{ "claude-opus-4-8": { "input": 5, "output": 25 } }`) to set exact, negotiated, or
+  Batch (50%-off) rates, or price a new model — without editing source, no network.
+  User-provided rates are treated as exact.
 
 ### Changed
 - The receipt no longer truncates the biggest-waste explanation/fix with `…` — it

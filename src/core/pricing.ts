@@ -11,6 +11,9 @@
 // receipt always labels cost as "estimated" because (a) some legacy model rates are
 // approximate and (b) we cannot perfectly attribute Batch/discount tiers.
 
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
 import type { ModelUsage } from "./types";
 
 export const CACHE_READ_MULT = 0.1;
@@ -64,16 +67,49 @@ function normalize(model: string): string {
   return (model || "").trim().toLowerCase();
 }
 
-/** Resolve a model id (possibly date-suffixed) to a rate via longest-prefix match. */
-export function rateFor(model: string): Rate {
-  const id = normalize(model);
+// User-supplied rate overrides, read once from ~/.bartab/pricing.json (or
+// $BARTAB_HOME/pricing.json). Lets users set exact, negotiated, or Batch (50%-off)
+// rates, or add a brand-new model, without touching source. Local-first: no network.
+// Shape: { "claude-opus-4-8": { "input": 5, "output": 25 }, "my-model": {...} }
+// User-provided rates are treated as exact (no "approximate pricing" note).
+let overridesCache: Record<string, Rate> | null = null;
+function overrides(): Record<string, Rate> {
+  if (overridesCache) return overridesCache;
+  overridesCache = {};
+  try {
+    const dir = process.env.BARTAB_HOME || path.join(os.homedir(), ".bartab");
+    const raw = fs.readFileSync(path.join(dir, "pricing.json"), "utf8");
+    const obj = JSON.parse(raw) as Record<string, { input?: unknown; output?: unknown }>;
+    for (const [model, v] of Object.entries(obj)) {
+      if (v && typeof v.input === "number" && typeof v.output === "number") {
+        overridesCache[normalize(model)] = { input: v.input, output: v.output, exact: true };
+      }
+    }
+  } catch {
+    // No override file (the common case) — use the built-in table.
+  }
+  return overridesCache;
+}
+
+function longestPrefix(id: string, table: Record<string, Rate>): Rate | null {
   let best: { key: string; rate: Rate } | null = null;
-  for (const key of Object.keys(RATES)) {
-    if (id.startsWith(key)) {
-      if (!best || key.length > best.key.length) best = { key, rate: RATES[key] };
+  for (const key of Object.keys(table)) {
+    if (id.startsWith(key) && (!best || key.length > best.key.length)) {
+      best = { key, rate: table[key] };
     }
   }
-  return best ? best.rate : FALLBACK;
+  return best ? best.rate : null;
+}
+
+/** Resolve a model id (possibly date-suffixed) to a rate. User overrides win. */
+export function rateFor(model: string): Rate {
+  const id = normalize(model);
+  return longestPrefix(id, overrides()) || longestPrefix(id, RATES) || FALLBACK;
+}
+
+/** Test seam: clear the cached override file. */
+export function _resetOverrides(): void {
+  overridesCache = null;
 }
 
 export interface CostResult {

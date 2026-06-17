@@ -27,11 +27,17 @@ function hook(payload) {
   });
   if (r.status !== 0) throw new Error("hook exited nonzero: " + r.stderr);
 }
-function cli(args) {
+function cli(args, extraEnv = {}) {
   return spawnSync("node", [BIN, ...args], {
     cwd: tmp,
     encoding: "utf8",
-    env: { ...process.env, FORCE_COLOR: "0", NO_COLOR: "1" },
+    env: {
+      ...process.env,
+      FORCE_COLOR: "0",
+      NO_COLOR: "1",
+      BARTAB_HOME: path.join(tmp, ".atab"),
+      ...extraEnv,
+    },
   });
 }
 
@@ -146,6 +152,17 @@ expect("summary total cost matches", Number(sum.totalCostUsd.toFixed(5)), 0.2507
 
 console.log("\n===== history =====");
 process.stdout.write(cli(["report", "--history"]).stdout);
+
+console.log("\n===== pricing override (~/.bartab/pricing.json) =====");
+const atab = path.join(tmp, ".atab");
+fs.mkdirSync(atab, { recursive: true });
+fs.writeFileSync(path.join(atab, "pricing.json"), JSON.stringify({ "claude-opus-4-8": { input: 100, output: 500 } }));
+const oj = JSON.parse(cli(["report", "--json", "--no-save"]).stdout);
+// (10002*100 + 6000*500 + 29000*100*0.1 + 1000*100*1.25 + 3000*100*2)/1e6
+const wantOverride = (10002 * 100 + 6000 * 500 + 29000 * 100 * 0.1 + 1000 * 100 * 1.25 + 3000 * 100 * 2) / 1e6;
+expect("override changes cost", Number(oj.cost.usd.toFixed(4)), Number(wantOverride.toFixed(4)));
+expect("override marks cost exact", oj.cost.hasUnknownModel, false);
+fs.rmSync(path.join(atab, "pricing.json"));
 
 const allPass = checks.every(Boolean);
 console.log("\nTMP:", tmp);
