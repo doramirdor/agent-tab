@@ -4,115 +4,171 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BarTab — a spending tab for your coding agent</title>
-<meta name="description" content="Local-first cost and bloat receipts for Claude Code and Codex. Your coding agent ran up a bar tab. npx bartab install.">
+<meta name="description" content="Local-first cost and bloat receipts for Claude Code and Codex. npx bartab install.">
 <meta property="og:title" content="BarTab">
 <meta property="og:description" content="A spending tab for your coding agent. Local-first cost + bloat receipts for Claude Code and Codex.">
-<meta name="theme-color" content="#0b0a09">
+<meta name="theme-color" content="#0a0b0d">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
+  :root{
+    --bg:#0a0b0d; --panel:#111216; --line:#1f2228;
+    --text:#edeef0; --muted:#9ca1a9; --faint:#666b73; --accent:#3ecf8e;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --receipt:"Courier Prime",var(--mono);
+  }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
-  body{margin:0;min-height:100vh;background:#0b0a09;display:flex;justify-content:center;align-items:flex-start;
-    padding:42px 14px 64px;font-family:"Courier Prime",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-  a{color:inherit}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.65;letter-spacing:-0.01em}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:880px;margin:0 auto;padding:0 28px}
+  .accent{color:var(--accent)}
 
-  .rcpt{--paper:#f5efe3;--ink:#26221b;--red:#b23b2e;--mut:#6b6353;
-    position:relative;width:min(404px,94vw);background:var(--paper);color:var(--ink);
-    padding:32px 26px 28px;box-shadow:0 18px 50px rgba(0,0,0,.55);font-size:13px;line-height:1.5}
-  .rcpt::before,.rcpt::after{content:"";position:absolute;left:0;right:0;height:11px;
-    background:linear-gradient(135deg,var(--paper) 6px,transparent 0) 0 0,
-              linear-gradient(225deg,var(--paper) 6px,transparent 0) 0 0;
-    background-size:12px 12px;background-repeat:repeat-x}
-  .rcpt::before{top:-11px;transform:rotate(180deg)}
-  .rcpt::after{bottom:-11px}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:26px 0}
+  nav .brand{font-size:15px;font-weight:600;letter-spacing:-0.02em}
+  nav a.gh{font-size:14px;color:var(--muted)}
+  nav a.gh:hover{color:var(--text)}
 
-  .ctr{text-align:center}
-  h1{font-size:28px;font-weight:700;letter-spacing:6px;margin:4px 0;line-height:1}
-  .stars{letter-spacing:3px}
-  .small{font-size:11px}
-  .mut{color:var(--mut)}
-  .rule{border-top:1.5px dashed var(--ink);opacity:.45;margin:13px 0}
-  .dbl{border-top:3px double var(--ink);margin:14px 0}
-  .li{display:flex;align-items:flex-end;gap:5px;margin:4px 0}
-  .li .d{flex:1;border-bottom:1.5px dotted var(--ink);opacity:.38;transform:translateY(-3px)}
-  .li .p{font-weight:700;white-space:nowrap}
-  .total{font-size:20px;font-weight:700;letter-spacing:1px}
-  .hdr{font-weight:700;letter-spacing:2px}
-  .stamp{display:inline-block;color:var(--red);border:2.5px solid var(--red);border-radius:6px;
-    padding:4px 12px;font-weight:700;letter-spacing:2px;transform:rotate(-8deg);opacity:.85}
-  .box{border:1.5px solid var(--ink);padding:10px;text-align:center;font-weight:700;letter-spacing:1px;margin:10px 0}
-  .barcode{height:46px;margin:12px 0 4px;
-    background-image:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px,
-      var(--ink) 5px 6px,transparent 6px 11px,var(--ink) 11px 14px,transparent 14px 16px)}
-  .links a{text-decoration:underline;text-underline-offset:2px}
-  .red{color:var(--red)}
+  header{padding:68px 0 0;text-align:center}
+  .eyebrow{font-size:13px;color:var(--muted)}
+  h1{font-size:clamp(38px,6.4vw,60px);line-height:1.04;font-weight:600;letter-spacing:-0.035em;margin:16px 0 0}
+  .sub{font-size:clamp(16px,2.2vw,19px);color:var(--muted);max-width:556px;margin:18px auto 0;line-height:1.55}
+  .cta{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin:32px 0 0}
+  .install{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:15px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 16px}
+  .install .d{color:var(--faint)}
+  .ghbtn{font-size:15px;color:var(--muted)}
+  .ghbtn:hover{color:var(--text)}
+
+  /* the showcased output — styled like a printed bar tab */
+  .stage{display:flex;flex-direction:column;align-items:center;margin:54px 0 0}
+  .receipt{--paper:#f5efe3;--ink:#26221b;--rmut:#6f6757;--green:#1f6b45;--amber:#9a6512;
+    position:relative;width:330px;max-width:86vw;background:var(--paper);color:var(--ink);
+    font-family:var(--receipt);font-size:12.5px;line-height:1.5;padding:26px 22px 22px;
+    box-shadow:0 16px 46px rgba(0,0,0,.5);text-align:left}
+  .receipt::before,.receipt::after{content:"";position:absolute;left:0;right:0;height:9px;
+    background:linear-gradient(135deg,var(--paper) 5px,transparent 0) 0 0,
+              linear-gradient(225deg,var(--paper) 5px,transparent 0) 0 0;
+    background-size:10px 10px;background-repeat:repeat-x}
+  .receipt::before{top:-9px;transform:rotate(180deg)}
+  .receipt::after{bottom:-9px}
+  .receipt .c{text-align:center}
+  .receipt .name{font-size:17px;font-weight:700;letter-spacing:4px}
+  .receipt .sm{font-size:10.5px} .receipt .mut{color:var(--rmut)}
+  .receipt .rule{border-top:1.5px dashed var(--ink);opacity:.4;margin:11px 0}
+  .receipt .dbl{border-top:3px double var(--ink);margin:11px 0}
+  .receipt .li{display:flex;align-items:flex-end;gap:5px;margin:3px 0}
+  .receipt .li .dt{flex:1;border-bottom:1.5px dotted var(--ink);opacity:.35;transform:translateY(-3px)}
+  .receipt .li .p{font-weight:700;white-space:nowrap}
+  .receipt .cost{font-size:18px;font-weight:700}
+  .receipt .hdr{font-weight:700;letter-spacing:1px}
+  .caption{margin-top:18px;font-size:13px;color:var(--faint)}
+
+  section{padding:84px 0 0}
+  h2{font-size:14px;font-weight:500;color:var(--muted);letter-spacing:0.04em;text-transform:uppercase;margin:0 0 28px}
+  .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px 36px}
+  .feat h3{font-size:16px;font-weight:600;margin:0 0 6px;letter-spacing:-0.01em}
+  .feat p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.6}
+  code{font-family:var(--mono);font-size:0.92em;color:var(--text)}
+  pre{font-family:var(--mono);font-size:13px;line-height:1.85;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 24px;overflow:auto;margin:0}
+  pre .a{color:var(--accent)} pre .f{color:var(--faint)}
+  .codex p{color:var(--muted);font-size:14.5px;max-width:620px;margin:16px 0 0}
+
+  footer{margin-top:96px;border-top:1px solid var(--line);padding:30px 0 64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+  footer .links{display:flex;gap:22px;font-size:14px}
+  footer a{color:var(--muted)} footer a:hover{color:var(--text)}
+  footer .meta{font-size:13px;color:var(--faint)}
 </style>
 </head>
 <body>
-<main class="rcpt">
+<div class="wrap">
 
-  <div class="ctr">
-    <div class="stars" aria-hidden="true">★ ★ ★ ★ ★</div>
-    <h1>BARTAB</h1>
-    <div class="small mut">A SPENDING TAB FOR<br>YOUR CODING AGENT</div>
-  </div>
+  <nav>
+    <span class="brand">BarTab</span>
+    <a class="gh" href="https://github.com/doramirdor/bartab">GitHub →</a>
+  </nav>
 
-  <div class="rule"></div>
-  <div class="small mut">SERVER&nbsp;&nbsp; Claude Code / Codex<br>TABLE&nbsp;&nbsp;&nbsp; ~/your-project<br>ORDER&nbsp;&nbsp;&nbsp; #0042 &nbsp; THU 21:47</div>
-  <div class="dbl"></div>
-
-  <div class="li"><span>EST. RUN COST</span><span class="d"></span><span class="p total">$1.42</span></div>
-  <div style="height:6px"></div>
-  <div class="li small"><span>input tokens</span><span class="d"></span><span class="p">213,000</span></div>
-  <div class="li small"><span>output tokens</span><span class="d"></span><span class="p">9,800</span></div>
-  <div class="li small"><span>files touched</span><span class="d"></span><span class="p">18</span></div>
-  <div class="li small"><span>lines added</span><span class="d"></span><span class="p">+612</span></div>
-  <div class="li small"><span>commands run</span><span class="d"></span><span class="p">27</span></div>
-  <div class="li small"><span>retries</span><span class="d"></span><span class="p">5</span></div>
-  <div class="rule"></div>
-  <div class="li"><span>BLOAT SCORE</span><span class="d"></span><span class="p">87/100</span></div>
-  <div class="small" style="letter-spacing:1px" aria-hidden="true">[█████████████▓░░] over the limit</div>
-  <div class="dbl"></div>
-
-  <div class="ctr small hdr">** BIGGEST WASTE **</div>
-  <div class="small" style="margin:6px 0">Re-read package-lock.json ×7</div>
-  <div class="small hdr red">&gt;&gt; FIX</div>
-  <div class="small">Add lockfiles to your agent's ignore rules.</div>
-  <div class="dbl"></div>
-
-  <div class="ctr small hdr">ON THE HOUSE</div>
-  <div class="rule"></div>
-  <div class="li small"><span>Accurate cost</span><span class="d"></span><span class="p">$0.00</span></div>
-  <div class="li small"><span>Bloat score</span><span class="d"></span><span class="p">$0.00</span></div>
-  <div class="li small"><span>Waste detectors</span><span class="d"></span><span class="p">$0.00</span></div>
-  <div class="li small"><span>CLAUDE.md fix rules</span><span class="d"></span><span class="p">$0.00</span></div>
-  <div class="li small"><span>Shareable receipt</span><span class="d"></span><span class="p">$0.00</span></div>
-  <div class="li small"><span>Weekly bill</span><span class="d"></span><span class="p">$0.00</span></div>
-  <div class="rule"></div>
-  <div class="li"><span>TOTAL</span><span class="d"></span><span class="p total">$0.00</span></div>
-  <div class="ctr" style="margin:14px 0 2px"><span class="stamp">ON THE HOUSE</span></div>
-  <div class="ctr small mut">no account · no upload · runs on your machine</div>
-  <div class="dbl"></div>
-
-  <div class="ctr small hdr">TO OPEN A TAB</div>
-  <div class="box">$ npx bartab install</div>
-  <div class="ctr small mut">works with Claude Code &amp; Codex</div>
-  <div class="dbl"></div>
-
-  <div class="ctr">
-    <div class="small hdr">★ THANK YOU ★</div>
-    <div class="small mut">TIP YOUR AGENT WISELY</div>
-    <div class="barcode" aria-hidden="true"></div>
-    <div class="small mut" style="letter-spacing:2px">B A R T A B &nbsp; v0.1.0 &nbsp; MIT</div>
-    <div class="small links" style="margin-top:10px">
-      <a href="https://github.com/doramirdor/bartab">GITHUB</a> &nbsp;·&nbsp;
-      <a href="https://github.com/doramirdor/bartab#readme">DOCS</a> &nbsp;·&nbsp;
-      <a href="https://github.com/doramirdor/bartab/blob/main/docs/ARCHITECTURE.md">HOW IT WORKS</a>
+  <header>
+    <div class="eyebrow">Local-first · Claude Code &amp; Codex</div>
+    <h1>A spending tab for<br>your coding agent.</h1>
+    <p class="sub">A receipt after every run — real cost, a bloat score, and the one fix that would have saved the most. Nothing leaves your machine.</p>
+    <div class="cta">
+      <span class="install"><span class="d">$</span>&nbsp;npx bartab install</span>
+      <a class="ghbtn" href="https://github.com/doramirdor/bartab">View source →</a>
     </div>
+  </header>
+
+  <div class="stage">
+    <div class="receipt" role="img" aria-label="Example BarTab receipt: $1.42 estimated, bloat 87 of 100, biggest waste re-read package-lock.json 7 times, fix add lockfiles to ignore rules.">
+      <div class="c">
+        <div class="name">BARTAB</div>
+        <div class="sm mut">CLAUDE CODE RUN RECEIPT</div>
+      </div>
+      <div class="dbl"></div>
+      <div class="li"><span>EST. RUN COST</span><span class="dt"></span><span class="p cost">$1.42</span></div>
+      <div style="height:5px"></div>
+      <div class="li sm"><span>input tokens</span><span class="dt"></span><span class="p">213,000</span></div>
+      <div class="li sm"><span>output tokens</span><span class="dt"></span><span class="p">9,800</span></div>
+      <div class="li sm"><span>files touched</span><span class="dt"></span><span class="p">18</span></div>
+      <div class="li sm"><span>lines added</span><span class="dt"></span><span class="p">+612</span></div>
+      <div class="li sm"><span>commands run</span><span class="dt"></span><span class="p">27</span></div>
+      <div class="li sm"><span>retries</span><span class="dt"></span><span class="p">5</span></div>
+      <div class="rule"></div>
+      <div class="li"><span>BLOAT SCORE</span><span class="dt"></span><span class="p" style="color:var(--amber)">87/100</span></div>
+      <div class="dbl"></div>
+      <div class="c sm hdr">** BIGGEST WASTE **</div>
+      <div class="sm" style="margin:5px 0">Re-read package-lock.json ×7</div>
+      <div class="sm hdr" style="color:var(--green)">&gt;&gt; FIX</div>
+      <div class="sm">Add lockfiles to your agent's ignore rules.</div>
+      <div class="rule"></div>
+      <div class="c sm mut" style="letter-spacing:2px">npx bartab</div>
+    </div>
+    <div class="caption">↑ what <code>bartab report</code> prints after every run</div>
   </div>
 
-</main>
+  <section>
+    <h2>What you get</h2>
+    <div class="features">
+      <div class="feat"><h3>Accurate cost</h3><p>Real token usage from the agent's own transcript, deduped per request, with the cache split. Labeled estimated, never faked.</p></div>
+      <div class="feat"><h3>Bloat score</h3><p>A transparent 0–100 score for how wasteful a run was, capped per dimension so nothing dominates.</p></div>
+      <div class="feat"><h3>Waste detectors</h3><p>Re-read files, lockfile reads, failing-test loops, dependency creep, edit churn — each with a concrete fix.</p></div>
+      <div class="feat"><h3>Rules that stick</h3><p><code>bartab fix</code> writes the recurring wastes into your <code>CLAUDE.md</code> so the next run is leaner.</p></div>
+      <div class="feat"><h3>Shareable receipt</h3><p>Export a card as SVG, PNG, or HTML — the painful, useful thing worth posting.</p></div>
+      <div class="feat"><h3>Weekly bill</h3><p><code>bartab summary</code> totals your recent runs, all on disk. Plus per-run history.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <pre>Claude Code / Codex
+   <span class="f">│  lifecycle hooks fire on every tool call</span>
+   ▼
+bartab hook   <span class="f">→  .bartab/runs/&lt;session&gt;.jsonl</span>
+   ▼
+analyzer   <span class="f">→  transcript tokens · git diff · detectors</span>
+   ├─  <span class="a">receipt</span>       bartab report
+   ├─  <span class="a">weekly bill</span>   bartab summary
+   ├─  <span class="a">share card</span>    bartab share --png
+   └─  <span class="a">agent rules</span>   bartab fix</pre>
+  </section>
+
+  <section class="codex">
+    <h2>Codex too</h2>
+    <pre>$ npx bartab install --codex</pre>
+    <p>Same flow — tokens come from Codex's on-disk rollout. One note: Codex skips a new command hook until you trust it, so run <code>/hooks</code> inside Codex once after installing.</p>
+  </section>
+
+  <footer>
+    <div class="links">
+      <a href="https://github.com/doramirdor/bartab">GitHub</a>
+      <a href="https://github.com/doramirdor/bartab#readme">Docs</a>
+      <a href="https://github.com/doramirdor/bartab/blob/main/docs/ARCHITECTURE.md">Architecture</a>
+      <a href="https://github.com/doramirdor/bartab/blob/main/CHANGELOG.md">Changelog</a>
+    </div>
+    <div class="meta">MIT · zero required runtime deps</div>
+  </footer>
+
+</div>
 </body>
 </html>
