@@ -8,7 +8,7 @@ try {
   cli = require("../dist/cli/index.js");
 } catch (err) {
   process.stderr.write(
-    "bartab: build output missing. Run `npm run build` in the bartab package.\n" +
+    "openbar: build output missing. Run `npm run build` in the openbar package.\n" +
       String((err && err.message) || err) +
       "\n",
   );
@@ -18,7 +18,7 @@ try {
 cli.main(process.argv.slice(2)).then(
   (code) => process.exit(typeof code === "number" ? code : 0),
   (err) => {
-    process.stderr.write("bartab: " + String((err && err.stack) || err) + "\n");
+    process.stderr.write("openbar: " + String((err && err.stack) || err) + "\n");
     process.exit(1);
   },
 );

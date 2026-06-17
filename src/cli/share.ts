@@ -1,4 +1,4 @@
-// `bartab share` — render a shareable card for a session (SVG, PNG, or HTML).
+// `openbar share` — render a shareable card for a session (SVG, PNG, or HTML).
 
 import * as fs from "fs";
 import * as path from "path";
@@ -70,7 +70,7 @@ export function runShare(argv: string[]): number {
   process.stdout.write(
     c.green("  ✓ Receipt card saved\n") +
       `  ${c.cyan(outPath)}\n` +
-      c.dim("  Post the SVG, or run  bartab share --png  for a PNG.\n"),
+      c.dim("  Post the SVG, or run  openbar share --png  for a PNG.\n"),
   );
   return 0;
 }
@@ -91,14 +91,14 @@ function svgToPng(svg: string): Buffer | null {
 function htmlWrapper(svg: string, sessionId: string): string {
   const b64 = Buffer.from(svg, "utf8").toString("base64");
   return `<!doctype html>
-<html><head><meta charset="utf-8"><title>BarTab receipt</title>
+<html><head><meta charset="utf-8"><title>OpenBar receipt</title>
 <style>
   body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#0b0c0e;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
   img{max-width:90vw;height:auto;border-radius:20px}
   button{padding:10px 18px;border-radius:10px;border:1px solid #2a2d34;background:#16181d;color:#e8eaed;font-size:14px;cursor:pointer}
   button:hover{background:#1f2228}
 </style></head><body>
-<img id="card" alt="BarTab receipt" src="data:image/svg+xml;base64,${b64}">
+<img id="card" alt="OpenBar receipt" src="data:image/svg+xml;base64,${b64}">
 <button id="dl">Download PNG</button>
 <script>
   const img=document.getElementById('card');

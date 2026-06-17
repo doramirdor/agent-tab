@@ -6,10 +6,18 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Fixed
+- `install` no longer overwrites a settings file that exists but isn't valid JSON.
+  Previously a malformed `.claude/settings.json` (e.g. a stray trailing comma) was
+  silently treated as empty, so install would clobber the user's entire config —
+  including the global `~/.claude/settings.json`. Install now aborts with an
+  actionable message and leaves the file untouched; `uninstall` skips unparseable
+  files instead of rewriting them.
+
 ### Added
-- Global project registry (`~/.bartab/projects.json`, override with `BARTAB_HOME`).
+- Global project registry (`~/.openbar/projects.json`, override with `OPENBAR_HOME`).
   Hooks record each project on lifecycle events so commands can find your data.
-- Local pricing override: drop a `~/.bartab/pricing.json` (e.g.
+- Local pricing override: drop a `~/.openbar/pricing.json` (e.g.
   `{ "claude-opus-4-8": { "input": 5, "output": 25 } }`) to set exact, negotiated, or
   Batch (50%-off) rates, or price a new model — without editing source, no network.
   User-provided rates are treated as exact.
@@ -19,7 +27,7 @@ All notable changes to this project are documented here. The format is based on
 wraps the full text to your terminal width.
 - `report` no longer prints a misleading all-zeros receipt when run outside a project.
   If the current project has no usable session, it explains that `report` is
-  per-project and lists your recent bartab projects to `cd` into.
+  per-project and lists your recent openbar projects to `cd` into.
 - The `output_heavy` detector is now contextual: raw output volume scales with session
   length, so it only flags output that's large *and* disproportionate to durable change
   (few files / tiny diff), and it's now low-severity. A long, productive run no longer
@@ -36,7 +44,7 @@ First release. Local-first cost + bloat receipts for coding agents.
 - `install` / `uninstall` — wire hooks into Claude Code (`.claude/settings.json`) or
   Codex (`.codex/hooks.json`, via `--codex`). Idempotent and reversible.
 - `hook` — the collector. Reads a hook payload from stdin and appends a compact event
-  to `.bartab/runs/<session>.jsonl`. Wrapped to never block or slow the agent.
+  to `.openbar/runs/<session>.jsonl`. Wrapped to never block or slow the agent.
 - `report` — a per-run receipt: accurate token usage, estimated cost, file changes,
   retries, a 0–100 bloat score, and the biggest waste with a concrete fix.
 - `summary` — local aggregate of recent runs (your weekly agent bill).
@@ -49,7 +57,7 @@ First release. Local-first cost + bloat receipts for coding agents.
   `token_count` lines (OpenAI's cached-input semantics handled).
 - 12 waste detectors and a transparent, capped bloat score.
 - Local history via the built-in `node:sqlite` (degrades gracefully when unavailable).
-- Opt-in debug logging (`BARTAB_DEBUG=1` → `.bartab/bartab.log`).
+- Opt-in debug logging (`OPENBAR_DEBUG=1` → `.openbar/openbar.log`).
 
-[Unreleased]: https://github.com/doramirdor/bartab/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/doramirdor/bartab/releases/tag/v0.1.0
+[Unreleased]: https://github.com/doramirdor/openbar/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/doramirdor/openbar/releases/tag/v0.1.0

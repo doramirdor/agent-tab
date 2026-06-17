@@ -1,4 +1,4 @@
-// bartab CLI dispatch.
+// openbar CLI dispatch.
 
 import { runFix } from "./fix";
 import { runHook } from "./hook";
@@ -14,10 +14,10 @@ const pkg = require("../../package.json") as { version: string };
 
 function help(): void {
   const t = `
-${c.bold(c.cyan("BarTab"))} ${c.dim("— a spending tab for your coding agent")}
+${c.bold(c.cyan("OpenBar"))} ${c.dim("— a spending tab for your coding agent")}
 
 ${c.bold("Usage")}
-  bartab <command> [options]
+  openbar <command> [options]
 
 ${c.bold("Commands")}
   ${c.green("install")}      Add hooks to Claude Code (or Codex with --codex)
@@ -25,16 +25,16 @@ ${c.bold("Commands")}
   ${c.green("summary")}      Aggregate recent runs (your weekly agent bill)
   ${c.green("share")}        Render a shareable card (SVG / PNG / HTML)
   ${c.green("fix")}          Write detected waste as rules into CLAUDE.md / AGENTS.md
-  ${c.green("uninstall")}    Remove bartab hooks
+  ${c.green("uninstall")}    Remove openbar hooks
   ${c.green("hook")}         (internal) collect a hook event from stdin
 
 ${c.bold("Examples")}
-  npx bartab install
-  npx bartab install --codex
-  npx bartab report
-  npx bartab summary
-  npx bartab share --png
-  npx bartab fix --all
+  npx openbar install
+  npx openbar install --codex
+  npx openbar report
+  npx openbar summary
+  npx openbar share --png
+  npx openbar fix --all
 
 ${c.bold("Options")}
   install  --codex --global --local --print

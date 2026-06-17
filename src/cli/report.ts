@@ -1,4 +1,4 @@
-// `bartab report` — analyze a session and print a receipt.
+// `openbar report` — analyze a session and print a receipt.
 
 import * as fs from "fs";
 import { analyze, loadEvents } from "../core/analyze";
@@ -45,7 +45,7 @@ export function runReport(argv: string[]): number {
       return 1;
     }
     process.stderr.write(
-      c.yellow("No bartab runs in this project.\n") +
+      c.yellow("No openbar runs in this project.\n") +
         c.dim(`(looked in ${runsDir()})\n`),
     );
     printWhereData();
@@ -76,7 +76,7 @@ export function runReport(argv: string[]): number {
       c.yellow("\n  Nothing to report in this project yet.\n") +
         c.dim(
           `  The latest session here (${sessionId.slice(0, 8)}) has no token data —\n` +
-            `  report reads ./.bartab/runs under the current project.\n`,
+            `  report reads ./.openbar/runs under the current project.\n`,
         ),
     );
     printWhereData();
@@ -103,12 +103,12 @@ function printWhereData(): void {
   if (projects.length === 0) return;
   const L: string[] = [];
   L.push("");
-  L.push(c.dim("  Your recent bartab projects:"));
+  L.push(c.dim("  Your recent openbar projects:"));
   for (const p of projects.slice(0, 8)) {
     L.push(`   ${c.cyan(p.path)}`);
   }
   L.push("");
-  L.push(c.dim("  cd into one and run  bartab report  (it's per-project)."));
+  L.push(c.dim("  cd into one and run  openbar report  (it's per-project)."));
   L.push("");
   process.stdout.write(L.join("\n"));
 }
@@ -120,7 +120,7 @@ function printHistory(json: boolean): number {
     return 0;
   }
   if (rows.length === 0) {
-    process.stdout.write(c.dim("No saved runs yet. Run  bartab report  first.\n"));
+    process.stdout.write(c.dim("No saved runs yet. Run  openbar report  first.\n"));
     return 0;
   }
   const L: string[] = [];

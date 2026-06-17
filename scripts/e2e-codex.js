@@ -7,8 +7,8 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const BIN = path.resolve(__dirname, "..", "bin", "bartab.js");
-const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "bartab-codex-"));
+const BIN = path.resolve(__dirname, "..", "bin", "openbar.js");
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "openbar-codex-"));
 const SID = "codex-session-0001";
 const rollout = path.join(tmp, "rollout.jsonl");
 
@@ -20,7 +20,7 @@ function hook(payload) {
     cwd: tmp,
     input: JSON.stringify(payload),
     encoding: "utf8",
-    env: { ...process.env, BARTAB_HOME: path.join(tmp, ".atab") },
+    env: { ...process.env, OPENBAR_HOME: path.join(tmp, ".atab") },
   });
   if (r.status !== 0) throw new Error("hook nonzero: " + r.stderr);
 }
@@ -28,7 +28,7 @@ function cli(args) {
   return spawnSync("node", [BIN, ...args], {
     cwd: tmp,
     encoding: "utf8",
-    env: { ...process.env, NO_COLOR: "1", BARTAB_HOME: path.join(tmp, ".atab") },
+    env: { ...process.env, NO_COLOR: "1", OPENBAR_HOME: path.join(tmp, ".atab") },
   });
 }
 

@@ -1,20 +1,20 @@
 {
-  "name": "bartab",
+  "name": "openbar",
   "version": "0.1.0",
   "description": "A spending tab for your coding agent. Local-first cost + bloat receipts for Claude Code and Codex.",
   "license": "MIT",
   "author": "Dor Amir <amirdor@gmail.com>",
-  "homepage": "https://doramirdor.github.io/bartab/",
+  "homepage": "https://doramirdor.github.io/openbar/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/doramirdor/bartab.git"
+    "url": "git+https://github.com/doramirdor/openbar.git"
   },
   "bugs": {
-    "url": "https://github.com/doramirdor/bartab/issues"
+    "url": "https://github.com/doramirdor/openbar/issues"
   },
   "type": "commonjs",
   "bin": {
-    "bartab": "bin/bartab.js"
+    "openbar": "bin/openbar.js"
   },
   "files": [
     "bin",
@@ -31,7 +31,7 @@
     "prepare": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
     "test": "node scripts/e2e.js && node scripts/e2e-codex.js",
-    "bartab": "node bin/bartab.js"
+    "openbar": "node bin/openbar.js"
   },
   "keywords": [
     "claude-code",

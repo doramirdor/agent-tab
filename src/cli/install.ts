@@ -1,4 +1,4 @@
-// `bartab install` / `uninstall` — manage Claude Code and Codex hooks.
+// `openbar install` / `uninstall` — manage Claude Code and Codex hooks.
 
 import * as fs from "fs";
 import * as os from "os";
@@ -6,7 +6,7 @@ import * as path from "path";
 import { projectRoot } from "../core/paths";
 import { c } from "../core/util";
 
-const MARKER = "bartab";
+const MARKER = "openbar";
 
 interface HookCmd {
   type: "command";
@@ -47,24 +47,44 @@ const CODEX: AgentSpec = {
 function hookCommand(tool: string): string {
   // dist/cli/install.js -> package root is two levels up.
   const pkgRoot = path.resolve(__dirname, "..", "..");
-  const binPath = path.join(pkgRoot, "bin", "bartab.js");
+  const binPath = path.join(pkgRoot, "bin", "openbar.js");
   return `"${process.execPath}" "${binPath}" hook --tool ${tool}`;
 }
 
-function isBartabEntry(entry: HookEntry): boolean {
+function isOpenbarEntry(entry: HookEntry): boolean {
   return (entry.hooks || []).some(
     (h) =>
       typeof h.command === "string" &&
-      // Match our hooks, including the legacy "agent-tab" name so renames migrate.
-      (h.command.includes(MARKER) || h.command.includes("agent-tab")),
+      // Match our hooks, including legacy names ("bartab", "agent-tab") so renames migrate.
+      (h.command.includes(MARKER) ||
+        h.command.includes("bartab") ||
+        h.command.includes("agent-tab")),
   );
 }
 
+/** Thrown when a settings file exists but isn't valid JSON — so callers can
+ *  refuse to overwrite a user's real (but malformed) config. */
+class SettingsParseError extends Error {
+  constructor(public file: string) {
+    super(`settings file is not valid JSON: ${file}`);
+  }
+}
+
 function readSettings(file: string): Settings {
+  let raw: string;
   try {
-    return JSON.parse(fs.readFileSync(file, "utf8")) as Settings;
+    raw = fs.readFileSync(file, "utf8");
   } catch {
-    return {};
+    return {}; // No file yet — a fresh install.
+  }
+  if (!raw.trim()) return {}; // Empty file — treat as fresh.
+  try {
+    return JSON.parse(raw) as Settings;
+  } catch {
+    // The file has content we can't parse. Returning {} here would make the
+    // caller overwrite the user's entire settings file (model, permissions,
+    // env, MCP servers, …) with just our hooks. Refuse instead.
+    throw new SettingsParseError(file);
   }
 }
 
@@ -99,7 +119,7 @@ function buildHooks(spec: AgentSpec, existing: Record<string, HookEntry[]>): Rec
   const cmd = hookCommand(spec.tool);
   const hooks: Record<string, HookEntry[]> = { ...existing };
   const addEntry = (event: string, entry: HookEntry): void => {
-    const kept = (hooks[event] || []).filter((e) => !isBartabEntry(e));
+    const kept = (hooks[event] || []).filter((e) => !isOpenbarEntry(e));
     kept.push(entry);
     hooks[event] = kept;
   };
@@ -120,7 +140,22 @@ export function runInstall(argv: string[]): number {
   const spec = opts.codex ? CODEX : CLAUDE;
   const target = settingsTarget(opts);
 
-  const settings = readSettings(target);
+  let settings: Settings;
+  try {
+    settings = readSettings(target);
+  } catch (err) {
+    if (err instanceof SettingsParseError) {
+      process.stderr.write(
+        c.red(`\n  ✗ ${target} exists but isn't valid JSON.\n`) +
+          c.dim(
+            "  OpenBar won't overwrite it — that would wipe your other settings.\n" +
+              "  Fix the JSON (or move the file aside) and re-run install.\n\n",
+          ),
+      );
+      return 1;
+    }
+    throw err;
+  }
   settings.hooks = buildHooks(spec, settings.hooks || {});
 
   if (opts.print) {
@@ -153,12 +188,18 @@ export function runUninstall(argv: string[]): number {
   let touched = 0;
   for (const target of targets) {
     if (!fs.existsSync(target)) continue;
-    const settings = readSettings(target);
+    let settings: Settings;
+    try {
+      settings = readSettings(target);
+    } catch {
+      // Malformed JSON — can't safely rewrite it, so leave it untouched.
+      continue;
+    }
     const hooks = settings.hooks || {};
     let local = 0;
     for (const event of Object.keys(hooks)) {
       const before = hooks[event].length;
-      hooks[event] = hooks[event].filter((e) => !isBartabEntry(e));
+      hooks[event] = hooks[event].filter((e) => !isOpenbarEntry(e));
       local += before - hooks[event].length;
       if (hooks[event].length === 0) delete hooks[event];
     }
@@ -171,8 +212,8 @@ export function runUninstall(argv: string[]): number {
   }
   process.stdout.write(
     removed > 0
-      ? c.green(`Removed ${removed} bartab hook${removed === 1 ? "" : "s"} from ${touched} file${touched === 1 ? "" : "s"}\n`)
-      : c.dim("No bartab hooks found to remove.\n"),
+      ? c.green(`Removed ${removed} openbar hook${removed === 1 ? "" : "s"} from ${touched} file${touched === 1 ? "" : "s"}\n`)
+      : c.dim("No openbar hooks found to remove.\n"),
   );
   return 0;
 }
@@ -186,9 +227,9 @@ function ensureGitignore(): void {
     } catch {
       /* no file yet */
     }
-    if (!/^\.bartab\/?\s*$/m.test(content)) {
+    if (!/^\.openbar\/?\s*$/m.test(content)) {
       const prefix = content && !content.endsWith("\n") ? "\n" : "";
-      fs.appendFileSync(gi, `${prefix}.bartab/\n`);
+      fs.appendFileSync(gi, `${prefix}.openbar/\n`);
     }
   } catch {
     /* best effort */
@@ -199,7 +240,7 @@ function printInstalled(spec: AgentSpec, target: string): void {
   const L: string[] = [];
   const name = spec.tool === "codex" ? "Codex" : "Claude Code";
   L.push("");
-  L.push(c.green(c.bold(`  ✓ BarTab installed for ${name}`)));
+  L.push(c.green(c.bold(`  ✓ OpenBar installed for ${name}`)));
   L.push("");
   L.push(`  Hooks added to ${c.cyan(target)}`);
   L.push(
@@ -215,10 +256,10 @@ function printInstalled(spec: AgentSpec, target: string): void {
   }
   L.push("  Next:");
   L.push(`    1. Run ${name} as usual in this project`);
-  L.push(`    2. After it works, run  ${c.bold("npx bartab report")}`);
-  L.push(`    3. Turn waste into rules:  ${c.bold("npx bartab fix")}`);
+  L.push(`    2. After it works, run  ${c.bold("npx openbar report")}`);
+  L.push(`    3. Turn waste into rules:  ${c.bold("npx openbar fix")}`);
   L.push("");
-  L.push(c.dim(`  Uninstall anytime with  npx bartab uninstall${spec.tool === "codex" ? " --codex" : ""}`));
+  L.push(c.dim(`  Uninstall anytime with  npx openbar uninstall${spec.tool === "codex" ? " --codex" : ""}`));
   L.push("");
   process.stdout.write(L.join("\n"));
 }

@@ -1,13 +1,13 @@
 # Architecture
 
-BarTab turns an agent run into a receipt. The pipeline:
+OpenBar turns an agent run into a receipt. The pipeline:
 
 ```
 Claude Code / Codex
    │  lifecycle hooks (SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, …)
    ▼
-bartab hook            collect — append one compact JSON line per event
-   │                      .bartab/runs/<session>.jsonl
+openbar hook            collect — append one compact JSON line per event
+   │                      .openbar/runs/<session>.jsonl
    ▼
 analyze()                 orchestrate
    ├── transcript.ts / codex.ts   real token usage (deduped by request id)
@@ -24,9 +24,9 @@ RunReport ──► receipt.ts (terminal)
 
 ## Collection (the hook)
 
-`install` registers `bartab hook --tool <claude-code|codex>` at each lifecycle point.
+`install` registers `openbar hook --tool <claude-code|codex>` at each lifecycle point.
 On every event the hook reads the payload from **stdin**, normalizes it, and appends a
-line to `.bartab/runs/<session_id>.jsonl`. It:
+line to `.openbar/runs/<session_id>.jsonl`. It:
 
 - never writes to **stdout** (agents can inject hook stdout into the model) and always
   exits 0 (a hook must never block the agent);

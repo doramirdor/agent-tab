@@ -1,4 +1,4 @@
-// `bartab hook` — the collector. Reads a Claude Code hook payload from stdin and
+// `openbar hook` — the collector. Reads a Claude Code hook payload from stdin and
 // appends a normalized event line to the session's JSONL.
 //
 // Contract: this must NEVER block Claude Code. Every path is wrapped and we always

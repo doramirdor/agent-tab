@@ -67,8 +67,8 @@ function normalize(model: string): string {
   return (model || "").trim().toLowerCase();
 }
 
-// User-supplied rate overrides, read once from ~/.bartab/pricing.json (or
-// $BARTAB_HOME/pricing.json). Lets users set exact, negotiated, or Batch (50%-off)
+// User-supplied rate overrides, read once from ~/.openbar/pricing.json (or
+// $OPENBAR_HOME/pricing.json). Lets users set exact, negotiated, or Batch (50%-off)
 // rates, or add a brand-new model, without touching source. Local-first: no network.
 // Shape: { "claude-opus-4-8": { "input": 5, "output": 25 }, "my-model": {...} }
 // User-provided rates are treated as exact (no "approximate pricing" note).
@@ -77,7 +77,7 @@ function overrides(): Record<string, Rate> {
   if (overridesCache) return overridesCache;
   overridesCache = {};
   try {
-    const dir = process.env.BARTAB_HOME || path.join(os.homedir(), ".bartab");
+    const dir = process.env.OPENBAR_HOME || path.join(os.homedir(), ".openbar");
     const raw = fs.readFileSync(path.join(dir, "pricing.json"), "utf8");
     const obj = JSON.parse(raw) as Record<string, { input?: unknown; output?: unknown }>;
     for (const [model, v] of Object.entries(obj)) {

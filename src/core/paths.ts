@@ -1,28 +1,28 @@
-// Resolve where bartab stores its data for a given working directory.
+// Resolve where openbar stores its data for a given working directory.
 
 import * as fs from "fs";
 import * as path from "path";
 import { repoRoot } from "./git";
 
-/** Anchor the .bartab dir at the git root when available, else the cwd. */
+/** Anchor the .openbar dir at the git root when available, else the cwd. */
 export function projectRoot(cwd: string = process.cwd()): string {
   return repoRoot(cwd) || cwd;
 }
 
-export function bartabDir(cwd: string = process.cwd()): string {
-  return path.join(projectRoot(cwd), ".bartab");
+export function openbarDir(cwd: string = process.cwd()): string {
+  return path.join(projectRoot(cwd), ".openbar");
 }
 
 export function runsDir(cwd: string = process.cwd()): string {
-  return path.join(bartabDir(cwd), "runs");
+  return path.join(openbarDir(cwd), "runs");
 }
 
 export function receiptsDir(cwd: string = process.cwd()): string {
-  return path.join(bartabDir(cwd), "receipts");
+  return path.join(openbarDir(cwd), "receipts");
 }
 
 export function dbPath(cwd: string = process.cwd()): string {
-  return path.join(bartabDir(cwd), "bartab.db");
+  return path.join(openbarDir(cwd), "openbar.db");
 }
 
 export function sessionJsonlPath(sessionId: string, cwd: string = process.cwd()): string {

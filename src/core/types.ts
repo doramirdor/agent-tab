@@ -1,4 +1,4 @@
-// Shared types for the bartab core.
+// Shared types for the openbar core.
 
 /** A normalized event line as written by the hook collector to the per-session JSONL. */
 export interface AgentEvent {

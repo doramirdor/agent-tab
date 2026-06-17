@@ -7,8 +7,8 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 
-const BIN = path.resolve(__dirname, "..", "bin", "bartab.js");
-const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "bartab-e2e-"));
+const BIN = path.resolve(__dirname, "..", "bin", "openbar.js");
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "openbar-e2e-"));
 const SID = "test-session-0001";
 const transcript = path.join(tmp, ".transcript.jsonl");
 
@@ -23,7 +23,7 @@ function hook(payload) {
     cwd: tmp,
     input: JSON.stringify(payload),
     encoding: "utf8",
-    env: { ...process.env, BARTAB_HOME: path.join(tmp, ".atab") },
+    env: { ...process.env, OPENBAR_HOME: path.join(tmp, ".atab") },
   });
   if (r.status !== 0) throw new Error("hook exited nonzero: " + r.stderr);
 }
@@ -35,7 +35,7 @@ function cli(args, extraEnv = {}) {
       ...process.env,
       FORCE_COLOR: "0",
       NO_COLOR: "1",
-      BARTAB_HOME: path.join(tmp, ".atab"),
+      OPENBAR_HOME: path.join(tmp, ".atab"),
       ...extraEnv,
     },
   });
@@ -135,12 +135,12 @@ process.stdout.write(cli(["fix", "--print"]).stdout);
 
 console.log("\n===== share =====");
 process.stdout.write(cli(["share"]).stdout);
-const svg = path.join(tmp, ".bartab", "receipts", SID + ".svg");
+const svg = path.join(tmp, ".openbar", "receipts", SID + ".svg");
 console.log("svg exists:", fs.existsSync(svg), "bytes:", fs.existsSync(svg) ? fs.statSync(svg).size : 0);
 
 console.log("\n===== share --png =====");
 process.stdout.write(cli(["share", "--png"]).stdout);
-const png = path.join(tmp, ".bartab", "receipts", SID + ".png");
+const png = path.join(tmp, ".openbar", "receipts", SID + ".png");
 const pngOk = fs.existsSync(png) && fs.readFileSync(png).slice(1, 4).toString() === "PNG";
 expect("png written with PNG magic bytes", pngOk, true);
 
@@ -153,7 +153,7 @@ expect("summary total cost matches", Number(sum.totalCostUsd.toFixed(5)), 0.2507
 console.log("\n===== history =====");
 process.stdout.write(cli(["report", "--history"]).stdout);
 
-console.log("\n===== pricing override (~/.bartab/pricing.json) =====");
+console.log("\n===== pricing override (~/.openbar/pricing.json) =====");
 const atab = path.join(tmp, ".atab");
 fs.mkdirSync(atab, { recursive: true });
 fs.writeFileSync(path.join(atab, "pricing.json"), JSON.stringify({ "claude-opus-4-8": { input: 100, output: 500 } }));
@@ -163,6 +163,27 @@ const wantOverride = (10002 * 100 + 6000 * 500 + 29000 * 100 * 0.1 + 1000 * 100 
 expect("override changes cost", Number(oj.cost.usd.toFixed(4)), Number(wantOverride.toFixed(4)));
 expect("override marks cost exact", oj.cost.hasUnknownModel, false);
 fs.rmSync(path.join(atab, "pricing.json"));
+
+console.log("\n===== install must not clobber a malformed settings.json =====");
+{
+  const proj = fs.mkdtempSync(path.join(os.tmpdir(), "openbar-install-"));
+  fs.mkdirSync(path.join(proj, ".claude"), { recursive: true });
+  const settingsFile = path.join(proj, ".claude", "settings.json");
+  // Real user config, but with a trailing comma (invalid JSON — a common slip).
+  const original = '{\n  "model": "opus",\n  "permissions": { "allow": ["Bash"] },\n}\n';
+  fs.writeFileSync(settingsFile, original);
+  const r = spawnSync("node", [BIN, "install"], { cwd: proj, encoding: "utf8" });
+  expect("install refuses malformed settings (exit 1)", r.status, 1);
+  expect("malformed settings.json left untouched", fs.readFileSync(settingsFile, "utf8"), original);
+  // A valid file still gets hooks written.
+  fs.writeFileSync(settingsFile, '{\n  "model": "opus"\n}\n');
+  const r2 = spawnSync("node", [BIN, "install"], { cwd: proj, encoding: "utf8" });
+  expect("install succeeds on valid settings (exit 0)", r2.status, 0);
+  const after = JSON.parse(fs.readFileSync(settingsFile, "utf8"));
+  expect("existing keys preserved on valid install", after.model, "opus");
+  expect("hooks added on valid install", Boolean(after.hooks && after.hooks.PreToolUse), true);
+  fs.rmSync(proj, { recursive: true, force: true });
+}
 
 const allPass = checks.every(Boolean);
 console.log("\nTMP:", tmp);

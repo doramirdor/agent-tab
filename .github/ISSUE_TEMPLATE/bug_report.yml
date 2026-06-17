@@ -24,16 +24,16 @@ body:
     attributes:
       label: Steps to reproduce
       placeholder: |
-        1. npx bartab install
+        1. npx openbar install
         2. run the agent
-        3. npx bartab report
+        3. npx openbar report
     validations:
       required: true
   - type: textarea
     id: env
     attributes:
       label: Environment
-      description: Output of `node --version` and `npx bartab --version`, plus your OS.
+      description: Output of `node --version` and `npx openbar --version`, plus your OS.
     validations:
       required: true
   - type: textarea
@@ -41,6 +41,6 @@ body:
     attributes:
       label: Debug log (optional)
       description: >
-        Re-run with `BARTAB_DEBUG=1` and paste relevant lines from
-        `.bartab/bartab.log`. Redact anything sensitive.
+        Re-run with `OPENBAR_DEBUG=1` and paste relevant lines from
+        `.openbar/openbar.log`. Redact anything sensitive.
       render: text

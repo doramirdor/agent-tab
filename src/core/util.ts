@@ -2,7 +2,7 @@
 
 const enabledColor = (): boolean => {
   if (process.env.NO_COLOR) return false;
-  if (process.env.BARTAB_NO_COLOR) return false;
+  if (process.env.OPENBAR_NO_COLOR) return false;
   return Boolean(process.stdout && process.stdout.isTTY);
 };
 

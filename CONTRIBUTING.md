@@ -1,13 +1,13 @@
-# Contributing to BarTab
+# Contributing to OpenBar
 
-Thanks for helping. BarTab is a small, dependency-light TypeScript CLI, so the loop
+Thanks for helping. OpenBar is a small, dependency-light TypeScript CLI, so the loop
 is fast.
 
 ## Setup
 
 ```bash
-git clone https://github.com/doramirdor/bartab
-cd bartab
+git clone https://github.com/doramirdor/openbar
+cd openbar
 npm install        # also builds via the `prepare` script
 npm run build      # compile src/ -> dist/
 npm test           # end-to-end smoke tests (Claude Code + Codex)
@@ -32,7 +32,7 @@ src/
     storage.ts      optional node:sqlite history
     analyze.ts      orchestration: events + transcript -> RunReport
   cli/       one file per command (install, hook, report, summary, share, fix)
-bin/bartab.js     launcher
+bin/openbar.js     launcher
 scripts/             end-to-end tests
 ```
 
@@ -56,8 +56,8 @@ never show false precision.
 ## Debugging hooks
 
 Hooks write nothing to stdout by design (agents can inject hook stdout into the model).
-To see what the collector is doing, set `BARTAB_DEBUG=1` — it appends to
-`.bartab/bartab.log`.
+To see what the collector is doing, set `OPENBAR_DEBUG=1` — it appends to
+`.openbar/openbar.log`.
 
 ## Pull requests
 

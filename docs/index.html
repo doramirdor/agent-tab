@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BarTab — a spending tab for your coding agent</title>
-<meta name="description" content="Local-first cost and bloat receipts for Claude Code and Codex. npx bartab install.">
-<meta property="og:title" content="BarTab">
+<title>OpenBar — a spending tab for your coding agent</title>
+<meta name="description" content="Local-first cost and bloat receipts for Claude Code and Codex. npx openbar install.">
+<meta property="og:title" content="OpenBar">
 <meta property="og:description" content="A spending tab for your coding agent. Local-first cost + bloat receipts for Claude Code and Codex.">
 <meta name="theme-color" content="#0a0b0d">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,8 +85,8 @@
 <div class="wrap">
 
   <nav>
-    <span class="brand">BarTab</span>
-    <a class="gh" href="https://github.com/doramirdor/bartab">GitHub →</a>
+    <span class="brand">OpenBar</span>
+    <a class="gh" href="https://github.com/doramirdor/openbar">GitHub →</a>
   </nav>
 
   <header>
@@ -94,15 +94,15 @@
     <h1>A spending tab for<br>your coding agent.</h1>
     <p class="sub">A receipt after every run — real cost, a bloat score, and the one fix that would have saved the most. Nothing leaves your machine.</p>
     <div class="cta">
-      <span class="install"><span class="d">$</span>&nbsp;npx bartab install</span>
-      <a class="ghbtn" href="https://github.com/doramirdor/bartab">View source →</a>
+      <span class="install"><span class="d">$</span>&nbsp;npx openbar install</span>
+      <a class="ghbtn" href="https://github.com/doramirdor/openbar">View source →</a>
     </div>
   </header>
 
   <div class="stage">
-    <div class="receipt" role="img" aria-label="Example BarTab receipt: $1.42 estimated, bloat 87 of 100, biggest waste re-read package-lock.json 7 times, fix add lockfiles to ignore rules.">
+    <div class="receipt" role="img" aria-label="Example OpenBar receipt: $1.42 estimated, bloat 87 of 100, biggest waste re-read package-lock.json 7 times, fix add lockfiles to ignore rules.">
       <div class="c">
-        <div class="name">BARTAB</div>
+        <div class="name">OPENBAR</div>
         <div class="sm mut">CLAUDE CODE RUN RECEIPT</div>
       </div>
       <div class="dbl"></div>
@@ -122,9 +122,9 @@
       <div class="sm hdr" style="color:var(--green)">&gt;&gt; FIX</div>
       <div class="sm">Add lockfiles to your agent's ignore rules.</div>
       <div class="rule"></div>
-      <div class="c sm mut" style="letter-spacing:2px">npx bartab</div>
+      <div class="c sm mut" style="letter-spacing:2px">npx openbar</div>
     </div>
-    <div class="caption">↑ what <code>bartab report</code> prints after every run</div>
+    <div class="caption">↑ what <code>openbar report</code> prints after every run</div>
   </div>
 
   <section>
@@ -133,9 +133,9 @@
       <div class="feat"><h3>Accurate cost</h3><p>Real token usage from the agent's own transcript, deduped per request, with the cache split. Labeled estimated, never faked.</p></div>
       <div class="feat"><h3>Bloat score</h3><p>A transparent 0–100 score for how wasteful a run was, capped per dimension so nothing dominates.</p></div>
       <div class="feat"><h3>Waste detectors</h3><p>Re-read files, lockfile reads, failing-test loops, dependency creep, edit churn — each with a concrete fix.</p></div>
-      <div class="feat"><h3>Rules that stick</h3><p><code>bartab fix</code> writes the recurring wastes into your <code>CLAUDE.md</code> so the next run is leaner.</p></div>
+      <div class="feat"><h3>Rules that stick</h3><p><code>openbar fix</code> writes the recurring wastes into your <code>CLAUDE.md</code> so the next run is leaner.</p></div>
       <div class="feat"><h3>Shareable receipt</h3><p>Export a card as SVG, PNG, or HTML — the painful, useful thing worth posting.</p></div>
-      <div class="feat"><h3>Weekly bill</h3><p><code>bartab summary</code> totals your recent runs, all on disk. Plus per-run history.</p></div>
+      <div class="feat"><h3>Weekly bill</h3><p><code>openbar summary</code> totals your recent runs, all on disk. Plus per-run history.</p></div>
     </div>
   </section>
 
@@ -144,27 +144,27 @@
     <pre>Claude Code / Codex
    <span class="f">│  lifecycle hooks fire on every tool call</span>
    ▼
-bartab hook   <span class="f">→  .bartab/runs/&lt;session&gt;.jsonl</span>
+openbar hook   <span class="f">→  .openbar/runs/&lt;session&gt;.jsonl</span>
    ▼
 analyzer   <span class="f">→  transcript tokens · git diff · detectors</span>
-   ├─  <span class="a">receipt</span>       bartab report
-   ├─  <span class="a">weekly bill</span>   bartab summary
-   ├─  <span class="a">share card</span>    bartab share --png
-   └─  <span class="a">agent rules</span>   bartab fix</pre>
+   ├─  <span class="a">receipt</span>       openbar report
+   ├─  <span class="a">weekly bill</span>   openbar summary
+   ├─  <span class="a">share card</span>    openbar share --png
+   └─  <span class="a">agent rules</span>   openbar fix</pre>
   </section>
 
   <section class="codex">
     <h2>Codex too</h2>
-    <pre>$ npx bartab install --codex</pre>
+    <pre>$ npx openbar install --codex</pre>
     <p>Same flow — tokens come from Codex's on-disk rollout. One note: Codex skips a new command hook until you trust it, so run <code>/hooks</code> inside Codex once after installing.</p>
   </section>
 
   <footer>
     <div class="links">
-      <a href="https://github.com/doramirdor/bartab">GitHub</a>
-      <a href="https://github.com/doramirdor/bartab#readme">Docs</a>
-      <a href="https://github.com/doramirdor/bartab/blob/main/docs/ARCHITECTURE.md">Architecture</a>
-      <a href="https://github.com/doramirdor/bartab/blob/main/CHANGELOG.md">Changelog</a>
+      <a href="https://github.com/doramirdor/openbar">GitHub</a>
+      <a href="https://github.com/doramirdor/openbar#readme">Docs</a>
+      <a href="https://github.com/doramirdor/openbar/blob/main/docs/ARCHITECTURE.md">Architecture</a>
+      <a href="https://github.com/doramirdor/openbar/blob/main/CHANGELOG.md">Changelog</a>
     </div>
     <div class="meta">MIT · zero required runtime deps</div>
   </footer>

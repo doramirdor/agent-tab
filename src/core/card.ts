@@ -1,5 +1,5 @@
 // Render a RunReport as a shareable SVG card (zero dependencies).
-// SVG keeps `bartab share` dependency-free and converts cleanly to PNG later.
+// SVG keeps `openbar share` dependency-free and converts cleanly to PNG later.
 
 import type { RunReport } from "./types";
 import { fmtInt, fmtTokens, fmtUsd, oneLine, toolLabel } from "./util";
@@ -58,7 +58,7 @@ export function renderCardSvg(r: RunReport): string {
   <rect x="0.5" y="0.5" width="${W - 1}" height="${H - 1}" rx="20" fill="none" stroke="#2a2d34" stroke-width="1"/>
 
   <!-- header -->
-  <text x="40" y="58" font-size="22" font-weight="800" fill="#e8eaed">BarTab</text>
+  <text x="40" y="58" font-size="22" font-weight="800" fill="#e8eaed">OpenBar</text>
   <text x="40" y="80" font-size="14" fill="#9aa0a6">${esc(toolLabel(r.tool))} run receipt</text>
 
   <!-- headline cost -->
@@ -91,6 +91,6 @@ export function renderCardSvg(r: RunReport): string {
   <text x="58" y="374" font-size="13" font-weight="700" fill="#3ecf8e" letter-spacing="1">FIX</text>
   <text x="58" y="398" font-size="15" fill="#cfe9dd">${esc(oneLine(fixText, 64))}</text>
 
-  <text x="${W - 40}" y="${H - 18}" text-anchor="end" font-size="12" fill="#5f6671">npx bartab</text>
+  <text x="${W - 40}" y="${H - 18}" text-anchor="end" font-size="12" fill="#5f6671">npx openbar</text>
 </svg>`;
 }

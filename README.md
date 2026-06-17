@@ -1,15 +1,15 @@
-# BarTab
+# OpenBar
 
-[![CI](https://github.com/doramirdor/bartab/actions/workflows/ci.yml/badge.svg)](https://github.com/doramirdor/bartab/actions/workflows/ci.yml)
+[![CI](https://github.com/doramirdor/openbar/actions/workflows/ci.yml/badge.svg)](https://github.com/doramirdor/openbar/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%E2%89%A522.5-43853d.svg)](https://nodejs.org)
 
 **A spending tab for your coding agent.** Local-first cost + bloat receipts for Claude Code and Codex.
 
-🌐 [doramirdor.github.io/bartab](https://doramirdor.github.io/bartab/) · 📐 [Architecture](docs/ARCHITECTURE.md) · 🤝 [Contributing](CONTRIBUTING.md) · 🔒 [Security](SECURITY.md)
+🌐 [doramirdor.github.io/openbar](https://doramirdor.github.io/openbar/) · 📐 [Architecture](docs/ARCHITECTURE.md) · 🤝 [Contributing](CONTRIBUTING.md) · 🔒 [Security](SECURITY.md)
 
 ```text
-  BarTab  ·  Claude Code
+  OpenBar  ·  Claude Code
 
   $1.42 estimated run cost
   213k input tokens  (claude-opus-4-8)
@@ -32,15 +32,15 @@ It runs entirely on your machine. No account, no upload, no API key.
 ## Quick start
 
 ```bash
-npx bartab install     # add Claude Code hooks to this project
+npx openbar install     # add Claude Code hooks to this project
 # ... use Claude Code as usual ...
-npx bartab report      # print the receipt for the last run
-npx bartab summary     # your weekly agent bill across runs
-npx bartab fix         # turn the biggest wastes into CLAUDE.md rules
-npx bartab share --png # render a shareable card
+npx openbar report      # print the receipt for the last run
+npx openbar summary     # your weekly agent bill across runs
+npx openbar fix         # turn the biggest wastes into CLAUDE.md rules
+npx openbar share --png # render a shareable card
 ```
 
-Using Codex too? `npx bartab install --codex`.
+Using Codex too? `npx openbar install --codex`.
 
 ## How it works
 
@@ -48,16 +48,16 @@ Using Codex too? `npx bartab install --codex`.
 Claude Code / Codex
    │  (lifecycle hooks: SessionStart, PreToolUse, PostToolUse, Stop, …)
    ▼
-bartab hook  ──►  .bartab/runs/<session>.jsonl   (append-only event log)
+openbar hook  ──►  .openbar/runs/<session>.jsonl   (append-only event log)
    │
    ▼
 analyzer  ──►  transcript/rollout token usage + git diff + waste detectors
    │
-   ├─►  receipt (terminal)             bartab report
-   ├─►  weekly bill (terminal)         bartab summary
-   ├─►  shareable card (SVG/PNG/HTML)  bartab share
-   ├─►  agent rules (CLAUDE.md)        bartab fix
-   └─►  history (SQLite)               bartab report --history
+   ├─►  receipt (terminal)             openbar report
+   ├─►  weekly bill (terminal)         openbar summary
+   ├─►  shareable card (SVG/PNG/HTML)  openbar share
+   ├─►  agent rules (CLAUDE.md)        openbar fix
+   └─►  history (SQLite)               openbar report --history
 ```
 
 - **`install`** writes hooks into `.claude/settings.json` (or `--global` / `--local`). It's idempotent and reversible (`uninstall`).
@@ -70,7 +70,7 @@ Token counts come from the real Claude Code transcript (`message.usage`), not es
 
 It's still labeled **estimated** because pricing for some legacy models is approximate and discount tiers can't be detected. We never show false precision. (Note: on a Claude subscription you don't pay per token — the figure is the API-rate equivalent, a "what this would cost" signal, not an invoice.)
 
-Rates live in a built-in table. To set exact, negotiated, or Batch (50%-off) rates — or price a model BarTab doesn't know — drop a `~/.bartab/pricing.json`:
+Rates live in a built-in table. To set exact, negotiated, or Batch (50%-off) rates — or price a model OpenBar doesn't know — drop a `~/.openbar/pricing.json`:
 
 ```json
 { "claude-opus-4-8": { "input": 5, "output": 25 }, "my-model": { "input": 2, "output": 8 } }
@@ -78,7 +78,7 @@ Rates live in a built-in table. To set exact, negotiated, or Batch (50%-off) rat
 
 Your file wins over the defaults, stays on your machine, and its rates are treated as exact.
 
-> One subtlety handled correctly: a single API response is written to the transcript as multiple lines (one per content block) that all repeat the same `usage`. BarTab dedupes by request id so tokens aren't counted 3–5× over.
+> One subtlety handled correctly: a single API response is written to the transcript as multiple lines (one per content block) that all repeat the same `usage`. OpenBar dedupes by request id so tokens aren't counted 3–5× over.
 
 ## Bloat score
 
@@ -103,26 +103,26 @@ Re-read files, lockfile reads, `node_modules`/`dist` reads, repeated commands, f
 Codex has official hooks too, so the same flow works:
 
 ```bash
-npx bartab install --codex   # writes .codex/hooks.json (--global for ~/.codex)
+npx openbar install --codex   # writes .codex/hooks.json (--global for ~/.codex)
 ```
 
-Two Codex specifics BarTab handles for you:
+Two Codex specifics OpenBar handles for you:
 
 - **Tokens** come from Codex's on-disk rollout (`~/.codex/sessions/.../rollout-*.jsonl`, the `token_count` lines), normalized so the shared cost math applies. OpenAI pricing is approximate and the receipt says so.
 - **Trust model:** Codex skips a freshly-written command hook until you trust it — run `/hooks` inside Codex once after installing (or launch with `--dangerously-bypass-hook-trust`).
 
-## `bartab fix`
+## `openbar fix`
 
 Writes a managed block into `CLAUDE.md` (and `AGENTS.md` with `--all`), generated from what actually wasted money in your runs:
 
 ```md
-<!-- bartab:start -->
+<!-- openbar:start -->
 ## Agent cost rules
 
 - Do not read lockfiles unless explicitly asked. Use the manifest for dependency questions.
 - If the same command fails twice for the same reason, stop and explain the blocker.
 - Prefer editing existing files over creating new ones.
-<!-- bartab:end -->
+<!-- openbar:end -->
 ```
 
 The block is re-written in place on each run, so it stays current.
@@ -131,12 +131,12 @@ The block is re-written in place on each run, so it stays current.
 
 | Command | Description |
 |---|---|
-| `bartab install [--codex] [--global\|--local] [--print]` | Add hooks to Claude Code (or Codex) |
-| `bartab uninstall [--codex]` | Remove bartab hooks |
-| `bartab report [session] [--json] [--history] [--transcript path] [--no-save]` | Print a receipt |
-| `bartab summary [--days n\|--all] [--json]` | Aggregate recent runs (weekly bill) |
-| `bartab share [session] [--png] [--html] [--out file]` | Render a shareable card |
-| `bartab fix [session] [--all] [--target file] [--print]` | Write rules into CLAUDE.md / AGENTS.md |
+| `openbar install [--codex] [--global\|--local] [--print]` | Add hooks to Claude Code (or Codex) |
+| `openbar uninstall [--codex]` | Remove openbar hooks |
+| `openbar report [session] [--json] [--history] [--transcript path] [--no-save]` | Print a receipt |
+| `openbar summary [--days n\|--all] [--json]` | Aggregate recent runs (weekly bill) |
+| `openbar share [session] [--png] [--html] [--out file]` | Render a shareable card |
+| `openbar fix [session] [--all] [--target file] [--print]` | Write rules into CLAUDE.md / AGENTS.md |
 
 ## Requirements
 
@@ -157,8 +157,8 @@ and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the data flow.
 ## Troubleshooting
 
 Hooks are silent by design (agents can inject hook stdout into the model). If a run isn't
-showing up, set `BARTAB_DEBUG=1` and check `.bartab/bartab.log`. Confirm the
-hooks are registered with `bartab install --print`. On Codex, remember to trust the
+showing up, set `OPENBAR_DEBUG=1` and check `.openbar/openbar.log`. Confirm the
+hooks are registered with `openbar install --print`. On Codex, remember to trust the
 hook via `/hooks` after installing.
 
 ## Status
