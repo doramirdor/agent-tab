@@ -130,8 +130,11 @@ console.log("findings:", j.findings.map((f) => f.type).join(", "));
 console.log("files: touched=%d added=%d new=%d (src=%s)", j.files.filesTouched, j.files.linesAdded, j.files.newFiles, j.files.source);
 console.log("dep files:", j.files.dependencyFilesChanged.join(", ") || "(none)");
 
-console.log("\n===== fix --print =====");
-process.stdout.write(cli(["fix", "--print"]).stdout);
+console.log("\n===== fix --print (aggregated) =====");
+const fixOut = cli(["fix", "--print"]).stdout;
+process.stdout.write(fixOut);
+expect("fix surfaces the recurring repeated-read rule", fixOut.includes("Read a file once and keep it in context"), true);
+expect("fix block notes it aggregated sessions", /from \d+ recent session/.test(fixOut), true);
 
 console.log("\n===== share =====");
 process.stdout.write(cli(["share"]).stdout);

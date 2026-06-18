@@ -41,7 +41,7 @@ ${c.bold("Options")}
   report   [session] --json --history --transcript <path> --no-save
   summary  --days <n> --all --json
   share    [session] --png --html --out <file>
-  fix      [session] --all --target <file> --print
+  fix      [session] --last <n> --all --target <file> --print
 
 ${c.dim(`v${pkg.version}  ·  history storage: ${sqliteAvailable() ? "on (node:sqlite)" : "off (node:sqlite unavailable)"}`)}
 `;

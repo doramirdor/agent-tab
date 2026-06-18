@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+## [0.1.1] — 2026-06-17
+
+### Changed
+- `openbar fix` now **aggregates findings across your recent sessions** (configurable
+  with `--last n`, default 15) instead of only the latest run — so recurring waste wins
+  over a single, possibly-clean session. The managed block notes how many sessions it
+  drew from. Pass `--session <id>` for the old single-run behavior. (Found by dogfooding:
+  `fix` was defaulting to the latest session, which was sometimes clean, producing only
+  generic rules.)
+
 ### Fixed
 - `install` no longer overwrites a settings file that exists but isn't valid JSON.
   Previously a malformed `.claude/settings.json` (e.g. a stray trailing comma) was
